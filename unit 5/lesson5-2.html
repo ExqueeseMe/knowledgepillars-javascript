@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Lesson 5.2 – Objects</title>
+	</head>
+	<body>
+		<h2>Check the Console – Build a Data Profile</h2>
+		<script>
+			let student = {
+				name: "Adrian",
+				grade: 12,
+				GPA: 3.2,
+				enrolled: true,
+			};
+
+			student.GPA = 3.22;
+			student.favoriteSubject = "Computer Science";
+
+			console.log("📄 Student Profile:");
+			for (let kaw in student) {
+				console.log(`${kaw}: ${student[kaw]}`);
+			}
+
+			let classroom = [
+				{ name: "Ava", grade: 11, GPA: 3.9 },
+				{ name: "Leo", grade: 10, GPA: 3.4 },
+				{ name: "Maya", grade: 12, GPA: 4.0 },
+				{ name: "Noah", grade: 11, GPA: 3.1 },
+			];
+
+			console.log("Students in Classroom:");
+			for (let student of classroom) {
+				console.log(`${student.name} (Grade ${student.grade}) – GPA: ${student.GPA}`);
+			}
+		</script>
+	</body>
+</html>

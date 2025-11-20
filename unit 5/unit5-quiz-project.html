@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Unit 5 – Data Manager App</title>
+	</head>
+	<body>
+		<h2>Data Manager App – Check the Console</h2>
+		<script>
+			/* 
+      Author: Adrian M.
+      Project: Unit 5 – Data Manager App
+      Date: July 2025
+      */
+
+			let orders = [
+				{ name: "John Brown", product: "Business Laptop", price: 549.99 },
+				{ name: "Joanne Fletcher", product: "1080p 27 inch Monitor", price: 119.99 },
+				{ name: "Kate Growin", product: "Computer Mouse", price: 9.99 },
+				{ name: "Bob Rob", product: "76 inch 4K OLED TV", price: 3549.99 },
+			];
+
+			function showAllOrders(list) {
+				console.log("All Orders:");
+				for (let order of list) {
+					console.log(`Name: ${order.name}, Product Name: ${order.product}, Price: ${order.price}`);
+				}
+			}
+
+			function createOrder(name, product, price) {
+				if (price != Number(price)) {
+					console.log("error");
+				} else {
+					orders.push({ name, product, price });
+					console.log(`${name}'s order has been placed!`);
+				}
+			}
+
+			function mostExpensiveOrder(list) {
+				let mostExpensive = null;
+				for (const order of list) {
+					const price = Number(order.price);
+					if (!Number.isFinite(price)) continue; // skip invalid prices
+					if (mostExpensive === null || price > Number(mostExpensive.price)) {
+						mostExpensive = { ...order, price };
+					}
+				}
+
+				if (!mostExpensive) {
+					console.log("No valid orders with numeric prices found.");
+					return null;
+				}
+
+				console.log(`Most expensive order: ${mostExpensive.name} — ${mostExpensive.product} — $${mostExpensive.price.toFixed(2)}`);
+				return mostExpensive;
+			}
+
+			function sortByName(list) {
+				return list.slice().sort((a, b) => a.name.localeCompare(b.name));
+			}
+
+			showAllOrders(orders);
+			console.log("Creating order...");
+			createOrder("Jonathan Green", "iPhone 17 Pro Max 256GB", 1199.99);
+			console.log("Sorted by Name:");
+			showAllOrders(sortByName(orders));
+
+			let mostExpensive = mostExpensiveOrder(orders);
+			console.log(`The most expensive order was made by ${mostExpensive.name}, they ordered a ${mostExpensive.product} that costed $${mostExpensive.price}`);
+		</script>
+	</body>
+</html>
