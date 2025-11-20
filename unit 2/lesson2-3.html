@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Lesson 2.3 – Math and Conversion</title>
+	</head>
+	<body>
+		<h2>Check the Console!</h2>
+		<p id="result">[Results will appear here]</p>
+		<p id="extraInfo">[Extra info appears here]</p>
+
+		<script>
+			// Step 1: Arithmetic and Math Operators
+			let a = 7;
+			let b = 3;
+			let total = (a + b) * 2; // Multiply sum by 2
+			console.log("Total (a + b) * 2:", total);
+
+			// Step 2: Rounding Methods
+			let decimal = 4.67;
+			console.log("Original decimal:", decimal);
+			console.log("Rounded:", Math.round(decimal));
+			console.log("Floor:", Math.floor(decimal));
+			console.log("Ceil:", Math.ceil(decimal));
+
+			// Step 3: Random Number (1–6 like a die roll)
+			let dice = Math.floor(Math.random() * 6) + 1;
+			console.log("You rolled a", dice);
+
+			// Step 4: User Input and Conversion
+			let input = prompt("Enter your age:");
+			let age = parseInt(input); // Convert to number
+			let months = age * 12;
+
+			document.getElementById("result").textContent = `You're about ${months} months old.`;
+
+			// Step 5: Type Checking
+			console.log("Type of original input:", typeof input); // string
+			console.log("Type after parseInt:", typeof age); // number
+
+			// Step 6: Format result with string conversion
+			let formatted = "Your age in months is: " + String(months);
+			document.getElementById("extraInfo").textContent = formatted;
+			console.log("Formatted with String():", formatted);
+		</script>
+	</body>
+</html>

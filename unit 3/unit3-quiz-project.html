@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Guessing Game</title>
+	</head>
+	<body>
+		<h2>Guess the Secret Number (1–100)</h2>
+		<p id="gameResult">Your result will appear here.</p>
+
+		<script>
+			let randNum = Math.floor(Math.random() * 100) + 1;
+			let guess = null;
+			let attempts = 0;
+
+			while (guess != randNum) {
+				guess = parseInt(prompt("Guess the number I'm thinking of (1-100)"));
+
+				if (attempts === 10 && guess != randNum) {
+					console.log(`You ran out of tries... the answer was ${randNum}`);
+					document.getElementById("gameResult").textContent = `You ran out of tries... the answer was ${randNum}`;
+					break;
+				}
+
+				if (isNaN(guess) || guess > 100 || guess <= 0) {
+					console.log("Please enter a valid number");
+					alert("Please enter a valid number");
+					continue;
+				}
+
+				if (guess < randNum) {
+					console.log("Your guess was too low, try again.");
+					attempts++;
+					continue;
+				} else if (guess > randNum) {
+					console.log("Your guess was too high, try again.");
+					attempts++;
+					continue;
+				} else {
+					attempts++;
+					console.log(`You got it right! The answer was ${randNum}`);
+					console.log(`It took you ${attempts} tries.`);
+					if (attempts > 1) {
+						document.getElementById("gameResult").textContent = `You got it right! The answer was ${randNum}. It took you ${attempts} tries.`;
+					} else {
+						document.getElementById("gameResult").textContent = `You got it right! The answer was ${randNum}. It took you ${attempts} try.`;
+					}
+				}
+			}
+		</script>
+	</body>
+</html>

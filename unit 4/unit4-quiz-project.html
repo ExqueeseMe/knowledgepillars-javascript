@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Unit 4 Project – Quiz App</title>
+	</head>
+	<body>
+		<div>
+			<h2>Welcome to My Quiz!</h2>
+			<p id="results">You got null out of 5 correct.</p>
+			<p id="details">[Breakdown will go here]</p>
+			<link rel="stylesheet" href="./stylesproject.css" />
+			<link rel="preconnect" href="https://fonts.googleapis.com" />
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+			<link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet" />
+		</div>
+		<script>
+			/*
+            Author: Adrian M.
+            Project: Unit 4 - Fixing older project with functions. Old project: (Project: Unit 2 – Interactive Quiz)
+            Date: November 17th, 2025
+            */
+
+			let score = 0;
+			let feedback = "";
+			let nullCheck = false;
+
+			const fruits = new Set(["apple", "banana", "orange", "strawberry", "grape", "pear", "mango", "peach", "pineapple", "apricot", "nectarine", "watermelon", "cantaloupe", "blackberry", "raspberry", "cranberry", "papaya", "guava", "date", "pomegranate", "dragon fruit", "dragonfruit", "passionfruit", "tangerine", "mandarin"]);
+
+			const isFruit = (input) => {
+				if (!input) return false;
+
+				const normalized = String(input).toLowerCase().replace(/\s+/g, " ");
+				if (fruits.has(normalized)) return true;
+				if (normalized.endsWith("s")) {
+					const singular = normalized.replace(/s$/, "");
+					if (fruits.has(singular)) return true;
+				}
+				return false;
+			};
+
+			const answer5Length = (input) => {
+				let a5Length = input.length;
+
+				if (a5Length === answerToLength) {
+					return true;
+				} else {
+					return false;
+				}
+			};
+
+			const letterDecider = (number) => {
+				const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+				if (typeof number !== "number") return "";
+				if (number >= 1 && number <= 26) return letters[number - 1];
+				return "";
+			};
+
+			const sixRandomLetters = () => {
+				const letters = [];
+				for (let i = 0; i < 6; i++) {
+					const n = Math.floor(Math.random() * 26) + 1;
+					letters.push(letterDecider(n));
+				}
+				// make available globally for the prompt later
+				const randomLetters = letters.join("");
+				return randomLetters;
+			};
+
+			// generate the captcha string once
+			let randomLetters = sixRandomLetters();
+
+			const randomNumber100 = () => {
+				let random = Math.round(Math.random() * 100);
+				return random;
+			};
+
+			const randomNumber10 = () => {
+				let random = Math.round(Math.random() * 10);
+				return random;
+			};
+
+			let number1 = randomNumber100();
+			let number2 = randomNumber100();
+			let number3 = randomNumber10();
+			let number4 = randomNumber10();
+
+			let qNumber = 1;
+
+			const details = document.getElementById("details");
+			details.style.whiteSpace = "pre-line";
+			details.textContent = feedback;
+
+			quizQuestion = (question, answer) => {
+				let choice = prompt(question);
+				if (choice === null) {
+					choice = "";
+				} else {
+					choice = String(choice).trim();
+				}
+
+				if (typeof answer === "function") {
+					const ok = answer(choice);
+					if (ok) {
+						score++;
+						nullCheck = true;
+						feedback += `Q${qNumber}: Correct. ${choice} was accepted.\n`;
+						console.log(`Q${qNumber}: Correct`);
+					} else if (choice === "") {
+						feedback += `Q${qNumber}: No answer, input was cancelled\n`;
+						console.log(`Q${qNumber}: No answer`);
+					} else {
+						nullCheck = true;
+						feedback += `Q${qNumber}: Incorrect. ${choice} was not accepted.\n`;
+						console.log(`Q${qNumber}: Incorrect`);
+					}
+					qNumber++;
+					return;
+				}
+
+				const expected = String(answer);
+				if (choice === expected) {
+					score++;
+					nullCheck = true;
+					feedback += `Q${qNumber}: Correct. ${choice} was the correct answer.\n`;
+					console.log(`Q${qNumber}: Correct`);
+				} else if (choice === "") {
+					feedback += `Q${qNumber}: No answer, input was cancelled\n`;
+					console.log(`Q${qNumber}: No answer`);
+				} else {
+					nullCheck = true;
+					feedback += `Q${qNumber}: Incorrect. Expected ${expected}, not ${choice}.\n`;
+					console.log(`Q${qNumber}: Incorrect`);
+				}
+				qNumber++;
+			};
+
+			quizQuestion(`What is ${number3} x ${number4}?`, number3 * number4);
+			quizQuestion(`Complete this captcha and type these letters in all uppercase: ${randomLetters}`, randomLetters);
+			quizQuestion("Name a fruit that contains the letter 'a' (note: not all fruits are valid answers, try common fruits):", isFruit);
+			quizQuestion(`What is ${number1} + ${number2}?`, number1 + number2);
+			let answerToLength = 6;
+			quizQuestion(`Type a/an ${answerToLength} letter long word.`, answer5Length);
+
+			// Output results
+			let summary = `You got ${score} out of 5 correct.\n`;
+			if (score === 0) {
+				summary += "You failed.";
+			} else if (score === 5) {
+				summary += "Perfect!";
+			} else if (score >= 3 && score <= 4) {
+				summary += "Good job!";
+			} else if (score >= 1 && score <= 2) {
+				summary += "You can do better.";
+			} else {
+				summary += "How.";
+			}
+
+			if (feedback === "") {
+				feedback = "You didn't answer any questions\n";
+			}
+
+			if (nullCheck === false) {
+				summary = "You got null out of 5 correct.";
+			}
+
+			document.getElementById("results").textContent = summary;
+			document.getElementById("details").textContent = feedback;
+			console.log(summary);
+			console.log(feedback);
+		</script>
+	</body>
+</html>

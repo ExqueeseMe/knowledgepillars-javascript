@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Lesson 3.1 – Conditionals</title>
+	</head>
+	<body>
+		<h2>Smart Grade Generator</h2>
+		<p id="feedback">[Your grade will appear here]</p>
+
+		<script>
+			while (true) {
+				let input = prompt('Whats the password? (Type "QUIT" to quit)');
+				if (input === null || "") {
+					break;
+				}
+				if (input === "QUIT") {
+					console.log("Goodbye!");
+					break;
+				}
+				if (input === "ThePassword123") {
+					console.log("Password entered correctly!");
+					break;
+				} else {
+					console.log("Wrong password!");
+					continue;
+				}
+			}
+		</script>
+	</body>
+</html>

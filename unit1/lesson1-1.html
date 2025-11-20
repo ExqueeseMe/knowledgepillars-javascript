@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>First Script Test</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    
+    <h1 id="mainTitle">H1 [0]</h1>
+    <h1>H1 [1]</h1>
+    <p id="paragraph1">This paragraph will be changed by JavaScript</p>
+    <p id="paragraph2" class="hallo">This one will too!</p>
+    <h1>
+
+    <script>
+        // Console output
+        document.getElementsByTagName('h1')[0].textContent = "Hello!";
+        document.getElementsByTagName('h1')[1].textContent = "Hello again!";
+        document.getElementById("paragraph1").textContent = " JavaScript just updated this paragraph!";
+        document.getElementById("paragraph2").textContent = " Let's keep learning how to code!";
+    </script>
+
+</body>
+</html>

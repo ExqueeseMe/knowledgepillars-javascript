@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Unit 2 Project – Quiz App</title>
+	</head>
+	<body>
+		<div>
+			<h2>Welcome to My Quiz!</h2>
+			<p id="results">You got null out of 5 correct.</p>
+			<p id="details">[Breakdown will go here]</p>
+			<link rel="stylesheet" href="./stylesproject.css" />
+			<link rel="preconnect" href="https://fonts.googleapis.com" />
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+			<link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet" />
+		</div>
+		<script>
+			/*
+            Author: Adrian M.
+            Project: Unit 2 – Interactive Quiz
+            Date: November 7th, 2025
+            */
+
+			let score = 0;
+			let feedback = "";
+
+			const letterDecider = (number) => {
+				const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+				if (typeof number !== "number") return "";
+				if (number >= 1 && number <= 26) return letters[number - 1];
+				return "";
+			};
+
+			const sixRandomLetters = () => {
+				const letters = [];
+				for (let i = 0; i < 6; i++) {
+					const n = Math.floor(Math.random() * 26) + 1;
+					letters.push(letterDecider(n));
+				}
+				// make available globally for the prompt later
+				const randomLetters = letters.join("");
+				window.randomLetters = randomLetters;
+				return randomLetters;
+			};
+
+			// generate the captcha string once
+			let randomLetters = sixRandomLetters();
+
+			const randomNumber100 = () => {
+				let random = Math.round(Math.random() * 100);
+				return random;
+			};
+
+			const randomNumber10 = () => {
+				let random = Math.round(Math.random() * 10);
+				return random;
+			};
+
+			let number1 = randomNumber100();
+			let number2 = randomNumber100();
+			let number3 = randomNumber10();
+			let number4 = randomNumber10();
+
+			const details = document.getElementById("details");
+			details.style.whiteSpace = "pre-line";
+			details.textContent = feedback;
+
+			// Question 1: Math
+			let answer1 = prompt(`What is ${number3} x ${number4}?`);
+			if (answer1 == String(answer1) || answer1 === null) {
+				answer1 = "";
+			} else {
+				answer1 = Number(answer1);
+			}
+			if (answer1 === number3 * number4) {
+				score++;
+				feedback = `Q1: Correct. ${number3} + ${number4} = ${number3 * number4} was the correct answer.\n`;
+				console.log("Q1: Correct");
+			} else if (answer1 === "") {
+				feedback += "";
+				console.log("Q1: Incorrect");
+			} else {
+				feedback += `Q1: Incorrect. Expected ${number3 * number4}, not ${answer1}.\n`;
+				console.log("Q1: Incorrect");
+			}
+
+			// Question 2: Case-sensitive string
+			let answer2 = prompt(`Complete this captcha and type these letters in all uppercase: ${randomLetters}`);
+			if (answer2 === null) {
+				answer2 = "";
+			}
+			if (answer2 === randomLetters && answer2 === answer2.toUpperCase()) {
+				score++;
+				feedback += `Q2: Correct. ${randomLetters} was the correct answer.\n`;
+				console.log("Q2: Correct");
+			} else if (answer2 === "") {
+				feedback += "";
+				console.log("Q2: Incorrect");
+			} else {
+				feedback += `Q2: Incorrect. Expected ${randomLetters} in all caps, not ${answer2}.\n`;
+				console.log("Q2: Incorrect");
+			}
+
+			// Question 3: String is a fruit that contain the letter a
+			let answer3 = prompt("Name a fruit that contains the letter 'a' (note: not all fruits are valid answers, try common fruits):");
+			if (answer3 === null) {
+				answer3 = "";
+			} else {
+				answer3 = answer3.trim();
+			}
+
+			// list of common fruits (lowercase)
+			const fruits = new Set(["apple", "banana", "orange", "strawberry", "grape", "pear", "mango", "peach", "pineapple", "apricot", "nectarine", "watermelon", "cantaloupe", "blackberry", "raspberry", "cranberry", "papaya", "guava", "date", "pomegranate", "dragon fruit", "dragonfruit", "passionfruit", "tangerine", "mandarin"]);
+
+			let isFruit = false;
+			if (answer3 !== "") {
+				const normalized = answer3.toLowerCase().replace(/\s+/g, " ");
+				if (fruits.has(normalized)) {
+					isFruit = true;
+				} else if (normalized.endsWith("s")) {
+					// accept simple plurals like "apples" -> "apple"
+					const singular = normalized.replace(/s$/, "");
+					if (fruits.has(singular)) isFruit = true;
+				}
+			}
+
+			if (isFruit) {
+				score++;
+				feedback += `Q3: Correct. ${answer3} was a valid answer.\n`;
+				console.log("Q3: Correct");
+			} else if (answer3 === "") {
+				feedback += "";
+				console.log("Q3: Incorrect");
+			} else {
+				feedback += `Q3: Incorrect. ${answer3} is not recognized as a fruit.\n`;
+				console.log("Q3: Incorrect");
+			}
+
+			// Question 4: Math (But random)
+			let answer4 = Number(prompt(`What is ${number1} + ${number2}?`));
+			if (answer4 === 0) {
+				answer4 = "";
+			}
+			if (answer4 === number1 + number2) {
+				score++;
+				feedback += `Q4: Correct. ${number1} + ${number2} = ${number1 + number2} was the correct answer.\n`;
+				console.log("Q4: Correct");
+			} else if (answer4 === "") {
+				feedback += "";
+				console.log("Q4: Incorrect");
+			} else {
+				feedback += `Q4: Incorrect. Expected ${number1 + number2}, not ${answer4}.\n`;
+				console.log("Q4: Incorrect");
+			}
+
+			//Question 5: Word Length
+			let answer5 = prompt("Type a word that has 6 letters.");
+			if (answer5 === null) {
+				answer5 = "";
+				answer5Length = 0;
+			} else {
+				answer5Length = answer5.length;
+			}
+
+			if (answer5Length === 6) {
+				score++;
+				feedback += `Q5: Correct. ${answer5} was a valid answer.\n`;
+				console.log("Q5: Correct");
+			} else if (answer5 === "") {
+				feedback += "";
+				console.log("Q5: Incorrect");
+			} else {
+				feedback += `Q5: Incorrect. Expected a 6 letter word, not ${answer5}.\n`;
+				console.log("Q5: Incorrect");
+			}
+
+			// Output results
+			let summary = `You got ${score} out of 5 correct.\n`;
+			if (score === 0) {
+				summary += "You failed.";
+			} else if (score === 5) {
+				summary += "Perfect!";
+			} else if (score >= 3 && score <= 4) {
+				summary += "Good job!";
+			} else if (score >= 1 && score <= 2) {
+				summary += "You can do better.";
+			} else {
+				summary += "How.";
+			}
+
+			if (feedback === "") {
+				feedback = "You didn't answer any questions\n";
+			}
+
+			if (answer1 + answer2 + answer3 + answer4 + answer5 === "") {
+				summary = "You got null out of 5 correct.";
+			}
+
+			document.getElementById("results").textContent = summary;
+			document.getElementById("details").textContent = feedback;
+			console.log(summary);
+			console.log(feedback);
+		</script>
+	</body>
+</html>

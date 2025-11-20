@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Lesson 5.1 – Arrays</title>
+	</head>
+	<body>
+		<h2>My Favorite Things</h2>
+		<p>Check the console, and try adding new items below!</p>
+		<input type="text" id="userInput" placeholder="Enter a new favorite" />
+		<button onclick="addItem()">Add to List</button>
+
+		<script>
+			// Initial array
+			let favorites = ["Reading", "Pizza", "Coding", "Music", "Hiking"];
+
+			function displayList() {
+				console.clear();
+				console.log("Current Favorites:");
+				for (let i = 0; i < favorites.length; i++) {
+					console.log(`${i + 1}: ${favorites[i]}`);
+				}
+				console.log("Total items:", favorites.length);
+			}
+
+			function addItem() {
+				let newItem = document.getElementById("userInput").value;
+				if (newItem !== "") {
+					favorites.push(newItem);
+					document.getElementById("userInput").value = ""; // clear input
+					displayList();
+				} else {
+					alert("Please type something before adding!");
+				}
+			}
+
+			// Show initial list
+			displayList();
+		</script>
+	</body>
+</html>

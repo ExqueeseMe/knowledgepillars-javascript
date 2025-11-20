@@ -1,0 +1,19 @@
+body {
+	background-color: black;
+	color: white;
+	font-family: "Funnel Sans";
+	display: flex;
+	align-content: center;
+	justify-content: center;
+}
+
+div {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background-color: rgb(47, 42, 42);
+	width: 25rem;
+	height: 25rem;
+	border-radius: 25px;
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Lesson 2.2 – Strings</title>
+	</head>
+	<body>
+		<h2>Check the Console!</h2>
+		<p id="output">[Please turn on javascript for this to work!]</p>
+
+		<script>
+			// Lesson: 2.2 – Strings and Template Literals
+
+			// Declare name and phrase
+			let userName = prompt("enter yo username");
+			let favoritePhrase = prompt("enter yo phrase");
+
+			// Use string methods
+			let phraseUpper = favoritePhrase.toUpperCase();
+			let phraseLength = favoritePhrase.length;
+			let hasFun = favoritePhrase.includes("fun");
+			let coding = "I love coding".slice(2, 5);
+
+			if ((hasFun = false)) {
+				hasFun = "Nope!";
+			} else {
+				hasFun = "Yep!";
+			}
+
+			// Use a template literal
+			let summary = `Hi ${userName}, your phrase is "${favoritePhrase}".
+            It has ${phraseLength} characters, and in ALL CAPS: "${phraseUpper}".
+            Does it contain the word 'fun'? ${hasFun} ${coding}`;
+
+			// Output to page and console
+			document.getElementById("output").textContent = summary;
+			console.log(summary);
+		</script>
+	</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Lesson 3.1 – Conditionals</title>
+	</head>
+	<body>
+		<h2>Smart Grade Generator</h2>
+		<p id="feedback">[Your grade will appear here]</p>
+
+		<script>
+			/* 
+            Author: Adrian M.
+            Lesson: 3.1 – Conditionals (Smart Message Generator)
+            */
+
+			let input = prompt("Enter your test score (0–100):");
+			let input2 = prompt("How much extra credit was earned? (0-20):");
+			let extraCredit = parseInt(input2);
+			let credit = "";
+			let score = parseInt(input);
+			let grade = "";
+			let feedback = "";
+			let grade2 = "";
+			let feedback2 = "";
+
+			const feedbackOutput = document.getElementById("feedback");
+			feedbackOutput.style.whiteSpace = "pre-line";
+
+			if (isNaN(score) === true || score < 0 || score > 100) {
+				grade = "Invalid";
+				feedback = "(Test Score) Please enter a valid number between 0 and 100.\n";
+			} else {
+				if (score === 100) {
+					grade = "A+";
+					feedback = "Perfect score! You're a superstar!\n";
+				} else if (score >= 90) {
+					grade = "A";
+					feedback = "Excellent work!\n";
+				} else if (score >= 80) {
+					grade = "B";
+					feedback = "Great job! Keep it up.\n";
+				} else if (score >= 70) {
+					grade = "C";
+					feedback = "You passed, but there’s room to grow.\n";
+				} else if (score >= 60) {
+					grade = "D";
+					feedback = "You’re pretty close to not passing, but review and try again you can do better.\n";
+				} else {
+					grade = "F";
+					feedback = "Don’t give up—every expert was once a beginner.\n";
+				}
+			}
+
+			if (extraCredit < 0 || extraCredit > 20 || extraCredit === null || isNaN(extraCredit)) {
+				credit = "(Extra Credit) Please enter a valid number between 0 and 20";
+			} else {
+				credit = `You also earned ${extraCredit} points of extra credit.`;
+			}
+
+			if (isNaN(score) === true || score < 0 || score > 100) {
+				grade = "Invalid";
+				feedback = "(Test Score) Please enter a valid number between 0 and 100.\n";
+			} else {
+				if (extraCredit === 0 || extraCredit > 20 || extraCredit < 0) {
+					grade2 = grade;
+					feedback2 = "You didn't do extra credit.";
+				} else if (extraCredit + score > 100) {
+					grade2 = "A++";
+					feedback2 = "You got a more than perfect score! You're a genius!\n";
+				} else if (extraCredit + score === 100) {
+					grade2 = "A+";
+					feedback2 = "Great job! You got a perfect score with extra credit!\n";
+				} else if (extraCredit + score >= 90) {
+					grade2 = "A";
+					feedback2 = "Good job!\n";
+				} else if (extraCredit + score >= 80) {
+					grade2 = "B";
+					feedback2 = "You did ok.\n";
+				} else if (extraCredit + score >= 70) {
+					grade2 = "C";
+					feedback2 = "You passed, if you only passed because of extra credit, there’s room for improvement.\n";
+				} else if (extraCredit + score >= 60) {
+					grade2 = "D";
+					feedback2 = "You passed but you could've done much better.\n";
+				} else {
+					grade2 = "F";
+					feedback2 = "Don’t give up, if you practice maybe you can do good on both the test and extra credit.\n";
+				}
+			}
+
+			console.log("Test Score:", score);
+			console.log("Test Grade:", grade);
+			console.log("Message:", feedback + " " + credit);
+
+			feedbackOutput.textContent = grade === "Invalid" ? feedback + credit : `Your test grade is: ${grade} — ${feedback} ${credit}\n \nYour overall grade is ${grade2} — ${feedback2}`;
+		</script>
+	</body>
+</html>

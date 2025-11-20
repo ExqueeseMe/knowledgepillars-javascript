@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Lesson 4.1 – Functions</title>
+	</head>
+	<body>
+		<h2>Say It With a Function – Open the Console</h2>
+		<p id="output">[Function results will go here]</p>
+		<p id="output2">[Function results will go here]</p>
+
+		<script>
+			/* 
+      Author: Adrian M.
+      Lesson: 4.1 – Defining and Calling Functions
+      Goal: Create reusable functions with inputs and outputs
+      */
+
+			/* 
+  Author: Adrian M.
+  Lesson: 4.1 – Defining and Calling Functions
+  */
+
+			const letterChoose = (number) => {
+				const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+				if (typeof number !== "number") return "";
+				if (number >= 1 && number <= 26) return alphabet[number - 1];
+				return "";
+			};
+
+			const randomLetters = (amount) => {
+				const chars = [];
+				for (let i = 0; i < amount; i++) {
+					const n = Math.floor(Math.random() * 26) + 1;
+					chars.push(letterChoose(n));
+				}
+				return chars.join("");
+			};
+
+			const multiplyThreeNumbers = (a, b, c) => {
+				return a * b * c;
+			};
+
+			// safer password prompt: limited attempts and triggered by user
+			const askForPassword = (password, hint, maxAttempts = 6) => {
+				let attempts = 0;
+				while (attempts < maxAttempts) {
+					const raw = prompt(`Guess the password! Hint: ${hint}`);
+					if (raw === null) {
+						alert("Cancelled. Try again from the page when ready.");
+						return false;
+					}
+					const guess = String(raw).toLowerCase();
+					attempts++;
+					if (guess === password) {
+						alert("You guessed correctly. Good job!");
+						if (attempts === 1) {
+							document.getElementById("output2").textContent = `Password was: ${password.toUpperCase()}, you guessed correctly! It took you 1 attempt to guess correctly.`;
+						} else {
+							document.getElementById("output2").textContent = `Password was: ${password.toUpperCase()}, you guessed correctly! It took you ${attempts} attempts to guess correctly.`;
+						}
+						return true;
+					} else {
+						alert(`Wrong guess (${attempts}/${maxAttempts}).`);
+					}
+				}
+				alert("Out of attempts.");
+				document.getElementById("output2").textContent = `Password was: ${password}, you guessed incorrectly.`;
+				return false;
+			};
+
+			sayHelloWorldAndAlsoHaveAParameterForANumberForNoReason = (number) => {
+				return "Hello World! And this number: " + number;
+			};
+
+			const btn = document.createElement("button");
+			btn.textContent = "Start password challenge";
+			btn.addEventListener("click", () => askForPassword("coca cola", "popular drink", 1));
+			document.body.insertBefore(btn, document.getElementById("output"));
+
+			document.getElementById("output").textContent = "Here are 12 random letters: " + randomLetters(12) + " |||||| " + "Here's the product of 5, 9, and 3: " + multiplyThreeNumbers(5, 9, 3) + " ||||| " + sayHelloWorldAndAlsoHaveAParameterForANumberForNoReason(4);
+			console.log("Here are 12 random letters: " + randomLetters(12));
+			console.log("Here's the product of 5, 9, and 3: " + multiplyThreeNumbers(5, 9, 3));
+		</script>
+	</body>
+</html>

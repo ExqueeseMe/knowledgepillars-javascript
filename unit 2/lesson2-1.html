@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Lesson 2.1 – Variables and Types</title>
+	</head>
+	<body>
+		<h2>Check the Console!</h2>
+		<p id="summary">[This paragraph will be updated by JavaScript]</p>
+
+		<script>
+			/* 
+            Author: Adrian M.
+            Lesson: 2.1 – Variables and Data Types
+            */
+
+			// Declare personal data
+			let name = prompt("What's your name?");
+			let age = 17;
+			let school = prompt("What school do you attend?");
+			let favoriteFood = "Steak";
+			const weeksPerYear = 52;
+			let defaultName = "Student";
+
+			// Calculate age in weeks
+			let ageInWeeks = age * weeksPerYear;
+
+			document.getElementById("summary").textContent = "Hi, I’m " + (name ?? defaultName) + ". I’m " + age + " years old and I’ve lived roughly " + ageInWeeks + " weeks. ";
+
+			// Log data types
+			console.log("name:", typeof name);
+			console.log("age:", typeof age);
+			console.log("isStudent:", typeof true);
+			console.log("favoriteFood:", typeof favoriteFood);
+			document.getElementById("summary").style.fontSize = "18px";
+			if (school.toLowerCase().includes("school") == true) {
+				document.getElementById("summary").style.backgroundColor = "lightblue";
+				document.getElementById("summary").style.fontSize = "27px";
+				document.getElementById("summary").style.borderRadius = "10px";
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Lesson 4.2 – Parameters & Return</title>
+	</head>
+	<body>
+		<h2>Smart Function Lab – Check the Console</h2>
+		<p id="output">[Returned values may appear here]</p>
+
+		<script>
+			/* 
+      Author: Adrian M.
+      Lesson: 4.2 – Functions with Parameters & Return
+      */
+
+			functionThatReturnsTheLetterAButItAlsoHasAUselessEquationThatDoesNothing = () => {
+				let useless = 100 + 3828 * 27;
+				let evenMoreUseless = useless % 45;
+				return "A";
+			};
+
+			twoPlusTwoEqFourTrueOrNot = () => {
+				if (2 + 2 === 4) {
+					return "Yes! 2 + 2 DOES equal 4!";
+				} else {
+					return "Somehow, 2 + 2 does not equal 4.";
+				}
+			};
+			console.log(twoPlusTwoEqFourTrueOrNot());
+
+			getUsername = () => {
+				let username = prompt("What is your username?");
+				return username;
+			};
+
+			getAge = () => {
+				let age = prompt("What is your age?");
+				return age;
+			};
+
+			convertFtoC = (f) => {
+				return (((f - 32) * 5) / 9).toFixed(1);
+			};
+
+			greetingFunction = (temp) => {
+				let username = getUsername();
+				let age = getAge();
+				console.log(`Hello, ${username} ! Your age is: ${age}`);
+				console.log("It is " + convertFtoC(temp) + "C degrees outside.");
+				if (temp === 61) {
+					console.log("six one six one six one fahrenheit");
+				}
+			};
+
+			greetingFunction(61);
+		</script>
+	</body>
+</html>

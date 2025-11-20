@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Lesson 4.3 – Scope & Debugging</title>
+	</head>
+	<body>
+		<h2>🔍 Scope Lab – Open the Console</h2>
+		<script>
+			// Global variable
+			let schoolName = "Tech High";
+
+			// Function with its own local variable
+			function showSchoolInfo() {
+				let mascot = "Tigers";
+				console.log("School:", schoolName); // Global OK
+				console.log("Mascot:", mascot); // Local OK
+			}
+
+			showSchoolInfo();
+
+			// Trying to access mascot outside its scope
+			console.log("Mascot outside:", typeof mascot); // undefined
+
+			// Function that shadows a global variable
+			let x = 10;
+
+			function shadowTest() {
+				let x = 5; // Shadows global x
+				console.log("Inside function x =", x);
+			}
+
+			shadowTest();
+			console.log("Outside function x =", x); // Global still 10
+
+			// Function with scope error (buggy)
+			function brokenFunction() {
+				console.log("Before declare:", typeof message); // undefined
+				// console.log("Trying to use undeclared variable:", message); // would break
+				let message = "Fixed it!";
+				console.log("After declare:", message);
+			}
+
+			brokenFunction();
+
+			// Fixing a function that assumes global access
+			function addScores(score1, score2) {
+				let total = score1 + score2;
+				return total; // Use return instead of assuming external variable
+			}
+
+			// Use the return value instead of relying on total
+			let finalScore = addScores(88, 92);
+			console.log("Final Score:", finalScore);
+		</script>
+	</body>
+</html>
