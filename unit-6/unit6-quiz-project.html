@@ -53,8 +53,8 @@
 				justify-content: center;
 				text-align: center;
 				margin-top: 20px;
-				width: 300px;
-				height: 300px;
+				width: 315px;
+				height: 315px;
 				padding: 15px;
 				border: 2px solid #333;
 				background-color: #111;
@@ -84,8 +84,8 @@
 				</select>
 
 				<div class="input-group">
-					<input type="range" id="sizeSlider" min="25" max="600" value="300" />
-					<p id="sliderValue">300px</p>
+					<input type="range" id="sizeSlider" min="25" max="600" value="315" />
+					<p id="sliderValue">315px</p>
 				</div>
 			</div>
 		</div>
@@ -116,21 +116,10 @@
 				sizeBox.style.height = size + "px";
 
 				if (size < 45) {
-					document.getElementById("boxText").style.fontSize = "5px";
-				} else if (size < 70) {
-					document.getElementById("boxText").style.fontSize = "7px";
-				} else if (size < 125) {
-					document.getElementById("boxText").style.fontSize = "10px";
-				} else if (size < 200) {
-					document.getElementById("boxText").style.fontSize = "18px";
-				} else if (size < 300) {
-					document.getElementById("boxText").style.fontSize = "26px";
-				} else if (size < 400) {
-					document.getElementById("boxText").style.fontSize = "32px";
-				} else if (size < 500) {
-					document.getElementById("boxText").style.fontSize = "48px";
+					document.getElementById("boxText").style.fontSize = "6px";
 				} else {
-					document.getElementById("boxText").style.fontSize = "60px";
+					let calculatedFont = size / 10;
+					document.getElementById("boxText").style.fontSize = calculatedFont + "px";
 				}
 			});
 		</script>
