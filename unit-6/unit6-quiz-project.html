@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Web Page Where You Can Change Things</title>
+		<style>
+			body {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				font-family: Arial, sans-serif;
+				padding: 20px;
+				background-color: #111;
+				color: white;
+			}
+
+			select,
+			input,
+			button {
+				background-color: #333;
+				color: white;
+				border: 1px solid #555;
+				padding: 5px;
+			}
+
+			#randomInputs {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				flex-wrap: wrap;
+				gap: 20px;
+			}
+
+			.input-group {
+				display: flex;
+				align-items: center;
+				gap: 5px;
+			}
+
+			#userInput {
+				width: 200px;
+			}
+			#showBtn {
+				width: 150px;
+				cursor: pointer;
+			}
+			#sizeSlider {
+				width: 120px;
+			}
+
+			#resizeBox {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				text-align: center;
+				margin-top: 20px;
+				width: 300px;
+				height: 300px;
+				padding: 15px;
+				border: 2px solid #333;
+				background-color: #111;
+				color: #333;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Unit 6 – Interactive Web App</h1>
+
+		<div id="randomInputs">
+			<div class="input-group">
+				<input type="text" id="userInput" placeholder="Type something..." />
+				<button id="showBtn">Show Message</button>
+			</div>
+
+			<div class="input-group">
+				<select id="colorSelect">
+					<option value="">Pick a background color</option>
+					<option value="pink">Light Red</option>
+					<option value="lightyellow">Light Yellow</option>
+					<option value="lightgreen">Light Green</option>
+					<option value="lightblue">Light Blue</option>
+					<option value="lavender">Light Purple</option>
+					<option value="white">White</option>
+					<option value="brown">Brown</option>
+				</select>
+
+				<div class="input-group">
+					<input type="range" id="sizeSlider" min="25" max="600" value="300" />
+					<p id="sliderValue">300px</p>
+				</div>
+			</div>
+		</div>
+
+		<div id="resizeBox">
+			<p id="boxText">Resize this box with the slider, change text color with the dropdown, and type a message in the input!</p>
+		</div>
+
+		<script>
+			document.getElementById("showBtn").addEventListener("click", function () {
+				const name = document.getElementById("userInput").value;
+				document.getElementById("boxText").textContent = "You typed: " + name;
+			});
+
+			document.getElementById("colorSelect").addEventListener("change", function () {
+				const color = this.value;
+				const box = document.getElementById("resizeBox");
+				box.style.color = color;
+				box.style.borderColor = color;
+			});
+
+			document.getElementById("sizeSlider").addEventListener("input", function (event) {
+				const size = event.target.value;
+
+				document.getElementById("sliderValue").textContent = size + "px";
+				let sizeBox = document.getElementById("resizeBox");
+				sizeBox.style.width = size + "px";
+				sizeBox.style.height = size + "px";
+
+				if (size < 45) {
+					document.getElementById("boxText").style.fontSize = "5px";
+				} else if (size < 70) {
+					document.getElementById("boxText").style.fontSize = "7px";
+				} else if (size < 125) {
+					document.getElementById("boxText").style.fontSize = "10px";
+				} else if (size < 200) {
+					document.getElementById("boxText").style.fontSize = "18px";
+				} else if (size < 300) {
+					document.getElementById("boxText").style.fontSize = "26px";
+				} else if (size < 400) {
+					document.getElementById("boxText").style.fontSize = "32px";
+				} else if (size < 500) {
+					document.getElementById("boxText").style.fontSize = "48px";
+				} else {
+					document.getElementById("boxText").style.fontSize = "60px";
+				}
+			});
+		</script>
+	</body>
+</html>

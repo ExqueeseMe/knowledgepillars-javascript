@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Lesson 6.2 – Events</title>
+		<style>
+			body {
+				font-family: sans-serif;
+				padding: 20px;
+			}
+			#colorDisplay {
+				margin-top: 10px;
+				height: 60px;
+				width: 100%;
+				border: 2px solid #ccc;
+			}
+		</style>
+	</head>
+	<body>
+		<h2 id="heading">Welcome!</h2>
+
+		<button id="greetBtn">Click Me</button>
+
+		<hr />
+
+		<label for="nameInput">Type your name:</label><br />
+		<input type="text" id="nameInput" placeholder="Your name" />
+		<p id="livePreview">Live Preview:</p>
+
+		<hr />
+
+		<form id="greetingForm">
+			<label for="greetingInput">Enter a custom greeting:</label><br />
+			<input type="text" id="greetingInput" placeholder="e.g., Hello there!" />
+			<button type="submit">Submit Greeting</button>
+		</form>
+		<p id="formOutput">[Form result will appear here]</p>
+
+		<hr />
+
+		<label for="bgColor">Pick a background color:</label>
+		<input type="color" id="bgColor" />
+		<div id="colorDisplay">Color preview box</div>
+
+		<script>
+			/* 
+      Author: Adrian M.
+      Lesson: 6.2 – Event Handling
+      */
+
+			document.getElementById("greetBtn").addEventListener("click", function () {
+				document.getElementById("heading").textContent = "Thanks for clicking!";
+				console.log("Button clicked!");
+			});
+
+			document.getElementById("nameInput").addEventListener("input", function (event) {
+				document.getElementById("livePreview").textContent = "Live Preview: " + event.target.value;
+			});
+
+			document.getElementById("greetingForm").addEventListener("submit", function (event) {
+				event.preventDefault();
+				const greeting = document.getElementById("greetingInput").value;
+				document.getElementById("formOutput").textContent = `You said: "${greeting}"`;
+				console.log("Greeting submitted:", greeting);
+			});
+
+			document.getElementById("bgColor").addEventListener("change", function (event) {
+				const color = event.target.value;
+				const display = document.getElementById("colorDisplay");
+				display.style.backgroundColor = color;
+				display.textContent = `Background color set to: ${color}`;
+				console.log("Color changed to:", color);
+			});
+			document.addEventListener("click", function (event) {
+				console.log("Here is the full Event Object:", event);
+			});
+		</script>
+	</body>
+</html>
