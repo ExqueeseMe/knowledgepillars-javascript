@@ -1,0 +1,365 @@
+// ==UserScript==
+// @name         Zen Native Color Picker (v1.8.2)
+// @namespace    ZenMods
+// @version      1.8.2
+// @description  little mod that adds color picker to zen or any firefox browser
+// @author       AJ
+// @match        *://*/*
+// @grant        GM_addStyle
+// @grant        GM_getResourceText
+// @require      https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js
+// @resource     PICKR_CSS https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/nano.min.css
+// @run-at       document-idle
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    if (typeof Pickr === 'undefined') return;
+
+    const css = GM_getResourceText("PICKR_CSS");
+    if (css) GM_addStyle(css);
+
+    GM_addStyle(`
+        /* --- MAIN WINDOW --- */
+        .pcr-app {
+            background: rgba(30, 30, 35, 0.75) !important;
+            backdrop-filter: blur(25px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            border-radius: 18px !important;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05) !important;
+            width: 24em !important;
+            min-height: 28em !important;
+            display: flex !important;
+            flex-direction: column !important;
+            font-family: system-ui, -apple-system, sans-serif !important;
+            z-index: 2147483647 !important;
+            overflow: visible !important;
+            padding-bottom: 15px !important;
+        }
+
+        .pcr-palette { border-radius: 8px !important; }
+        .pcr-palette::before { border-radius: 8px !important; }
+
+        /* --- DRAG HANDLE --- */
+        .zen-drag-handle {
+            width: 100%;
+            height: 14px;
+            background: transparent;
+            cursor: grab;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 0px;
+            flex-shrink: 0;
+        }
+        .zen-drag-handle:active { cursor: grabbing; }
+        .zen-drag-handle::after {
+            content: '';
+            width: 40px;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+        }
+
+        /* --- MAIN PALETTE --- */
+        .pcr-selection {
+            flex-grow: 1 !important;
+            min-height: 14em !important;
+            border-radius: 12px !important;
+            overflow: visible !important;
+            z-index: 10 !important;
+            padding-bottom: 5px !important;
+            padding-right: 14px !important;
+            padding-left: 14px !important;
+        }
+
+        /* --- CUSTOM LAYOUT RULES --- */
+        .pcr-app[data-theme=nano] .pcr-selection .pcr-color-chooser,
+        .pcr-app[data-theme=nano] .pcr-selection .pcr-color-opacity {
+            margin: 0 !important;
+        }
+        .pcr-app[data-theme=nano] .pcr-selection .pcr-color-preview {
+            width: 50% !important;
+        }
+
+        /* --- SLIDERS --- */
+        .pcr-interaction {
+            margin-top: 0 !important;
+            padding: 0 10px !important;
+            margin: 0 !important;
+            overflow: visible !important;
+            z-index: 100 !important;
+            position: relative !important;
+        }
+
+        /* --- HANDLES --- */
+        .pcr-selection .pcr-picker,
+        .pcr-swatches .pcr-picker,
+        .pcr-interaction .pcr-picker {
+            width: 18px !important;
+            height: 18px !important;
+            border-radius: 50% !important;
+            border: 2px solid white !important;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5) !important;
+            box-sizing: border-box !important;
+        }
+        .pcr-color-chooser .pcr-picker,
+        .pcr-opacity-slider .pcr-picker {
+            width: 18px !important;
+            height: 18px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            z-index: 999 !important;
+        }
+        .pcr-color-chooser, .pcr-opacity-slider { overflow: visible !important; }
+
+        /* --- INPUTS & BUTTONS --- */
+        .pcr-interaction input {
+            background: rgba(0, 0, 0, 0.3) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 8px !important;
+            color: #fff !important;
+            font-family: 'Segoe UI Variable', monospace !important;
+            font-size: 0.85em !important;
+            padding: 6px 8px 10px 8px !important;
+            vertical-align: middle !important;
+            text-align: center !important;
+            height: 34px !important;
+            margin-top: 15px !important;
+        }
+        input.pcr-result { padding: 7px 8px 9px 8px !important; }
+        .pcr-interaction input:focus {
+            background: rgba(0, 0, 0, 0.5) !important;
+            border-color: rgba(255, 255, 255, 0.4) !important;
+        }
+        .pcr-interaction .pcr-save {
+            background: rgba(255, 255, 255, 0.9) !important;
+            color: #000 !important;
+            border-radius: 8px !important;
+            font-weight: 600 !important;
+            font-family: system-ui, sans-serif !important;
+            height: 36px !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            margin-top: 15px !important;
+        }
+        .pcr-interaction .pcr-save:hover {
+            background: #fff !important;
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
+        }
+        .pcr-current-color { border: 2px solid white !important; }
+        .pcr-interaction .pcr-cancel, .pcr-interaction .pcr-clear { display: none !important; }
+        .pcr-app .pcr-interaction { margin: 0 !important }
+        .pcr-type { align-items: center !important; justify-content: center !important; }
+        .zen-text-hide { color: transparent !important; }
+
+        /* --- TRIGGER BUTTON (WHITE ICON - Default) --- */
+        .zen-trigger-default {
+            appearance: none !important;
+            -webkit-appearance: none !important;
+            width: 44px !important;
+            height: 44px !important;
+            min-width: 44px !important;
+            max-width: 44px !important;
+            aspect-ratio: 1 / 1 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            cursor: pointer !important;
+            box-sizing: border-box !important;
+
+            /* Glass Style */
+            border-radius: 14px !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1), 0 2px 5px rgba(0,0,0,0.2) !important;
+
+            /* ICON: White (#ffffff) */
+            background-image: url('data:image/svg+xml,%3C%3Fxml version="1.0" encoding="utf-8"%3F%3E%3C!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"%3E%3Csvg width="800px" height="800px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"%3E%3Cpath fill="%23ffffff" d="M15 1c-1.8-1.8-3.7-0.7-4.6 0.1-0.4 0.4-0.7 0.9-0.7 1.5v0c0 1.1-1.1 1.8-2.1 1.5l-0.1-0.1-0.7 0.8 0.7 0.7-6 6-0.8 2.3-0.7 0.7 1.5 1.5 0.8-0.8 2.3-0.8 6-6 0.7 0.7 0.7-0.6-0.1-0.2c-0.3-1 0.4-2.1 1.5-2.1v0c0.6 0 1.1-0.2 1.4-0.6 0.9-0.9 2-2.8 0.2-4.6zM3.9 13.6l-2 0.7-0.2 0.1 0.1-0.2 0.7-2 5.8-5.8 1.5 1.5-5.9 5.7z"%3E%3C/path%3E%3C/svg%3E') !important;
+            background-repeat: no-repeat !important;
+            background-position: center center !important;
+            background-size: 20px !important;
+
+            filter: none !important;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background-image 0.2s ease !important;
+        }
+
+        .zen-trigger-default:hover {
+            transform: scale(1.05) translateY(-2px) !important;
+            border-color: rgba(255, 255, 255, 0.6) !important;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3), 0 6px 12px rgba(0,0,0,0.3) !important;
+        }
+
+        /* --- TRIGGER BUTTON (BLACK ICON - Active when Bright or Transparent) --- */
+        .zen-trigger-default.zen-icon-black {
+            /* ICON: Black (#000000) */
+            background-image: url('data:image/svg+xml,%3C%3Fxml version="1.0" encoding="utf-8"%3F%3E%3C!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"%3E%3Csvg width="800px" height="800px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"%3E%3Cpath fill="%23000000" d="M15 1c-1.8-1.8-3.7-0.7-4.6 0.1-0.4 0.4-0.7 0.9-0.7 1.5v0c0 1.1-1.1 1.8-2.1 1.5l-0.1-0.1-0.7 0.8 0.7 0.7-6 6-0.8 2.3-0.7 0.7 1.5 1.5 0.8-0.8 2.3-0.8 6-6 0.7 0.7 0.7-0.6-0.1-0.2c-0.3-1 0.4-2.1 1.5-2.1v0c0.6 0 1.1-0.2 1.4-0.6 0.9-0.9 2-2.8 0.2-4.6zM3.9 13.6l-2 0.7-0.2 0.1 0.1-0.2 0.7-2 5.8-5.8 1.5 1.5-5.9 5.7z"%3E%3C/path%3E%3C/svg%3E') !important;
+
+            border: 1px solid rgba(0, 0, 0, 0.3) !important;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1), 0 2px 5px rgba(0,0,0,0.2) !important;
+        }
+
+        .zen-trigger-default.zen-icon-black:hover {
+            border-color: rgba(0, 0, 0, 0.6) !important;
+        }
+    `);
+
+    // --- DRAG LOGIC ---
+    function makeDraggable(el, handle) {
+        let isDragging = false;
+        let startX, startY, initialLeft, initialTop;
+
+        handle.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            const rect = el.getBoundingClientRect();
+            initialLeft = rect.left;
+            initialTop = rect.top;
+            el.style.position = 'fixed';
+            el.style.left = `${initialLeft}px`;
+            el.style.top = `${initialTop}px`;
+            el.style.transform = 'none';
+            document.body.style.userSelect = 'none';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            el.style.left = `${initialLeft + dx}px`;
+            el.style.top = `${initialTop + dy}px`;
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            document.body.style.userSelect = '';
+        });
+    }
+
+    // --- HELPER: CALCULATE CONTRAST (BRIGHTNESS & ALPHA) ---
+    function checkContrast(colorInput, inputEl) {
+        let r, g, b, a = 1; // Default alpha to 1 (solid)
+
+        // 1. Try to get color from Pickr Object
+        if (colorInput && typeof colorInput.toRGBA === 'function') {
+            const rgba = colorInput.toRGBA();
+            r = rgba[0];
+            g = rgba[1];
+            b = rgba[2];
+            a = rgba[3]; // Alpha is 0 to 1
+        }
+        // 2. Fallback: Parse Hex string manually
+        else if (typeof colorInput === 'string' && colorInput.startsWith('#')) {
+            const hex = colorInput.replace('#', '');
+            if (hex.length === 3) {
+                r = parseInt(hex[0]+hex[0], 16);
+                g = parseInt(hex[1]+hex[1], 16);
+                b = parseInt(hex[2]+hex[2], 16);
+            } else if (hex.length === 6) {
+                r = parseInt(hex.substring(0, 2), 16);
+                g = parseInt(hex.substring(2, 4), 16);
+                b = parseInt(hex.substring(4, 6), 16);
+            } else if (hex.length === 8) {
+                // Handle 8-digit Hex with Alpha
+                r = parseInt(hex.substring(0, 2), 16);
+                g = parseInt(hex.substring(2, 4), 16);
+                b = parseInt(hex.substring(4, 6), 16);
+                // Convert alpha from 0-255 to 0-1 float
+                a = parseInt(hex.substring(6, 8), 16) / 255;
+            }
+        }
+
+        // 3. Calculate Luminance
+        if (isNaN(r)) r = 0;
+        if (isNaN(g)) g = 0;
+        if (isNaN(b)) b = 0;
+        const brightness = Math.round(((r * 299) + (g * 550) + (b * 114)) / 1000);
+
+        // 4. Toggle Logic
+        // Switch to BLACK icon if:
+        // A) Brightness > 140 (Very light color)
+        // OR
+        // B) Alpha < 0.376 (Transparency is below Hex 60)
+        if (brightness > 140 || a < 0.50) {
+            inputEl.classList.add('zen-icon-black');
+        } else {
+            inputEl.classList.remove('zen-icon-black');
+        }
+    }
+
+    function initColorPicker(input) {
+        if (input.dataset.zenReady) return;
+        input.dataset.zenReady = "true";
+        const startColor = input.value || '#000000';
+
+        input.setAttribute('type', 'text');
+        input.classList.add('zen-text-hide');
+        input.classList.add('zen-trigger-default');
+
+        input.style.backgroundColor = startColor;
+        input.value = startColor;
+
+        // Run check immediately on load
+        checkContrast(startColor, input);
+
+        const pickr = Pickr.create({
+            el: input,
+            theme: 'nano',
+            default: startColor,
+            useAsButton: true,
+            padding: 14,
+            position: 'right-start',
+            components: {
+                preview: true,
+                opacity: true,
+                hue: true,
+                interaction: { hex: true, rgba: true, hsla: true, input: true, save: true }
+            },
+            i18n: { 'btn:save': 'Apply' }
+        });
+
+        pickr.on('init', (instance) => {
+            const app = instance._root.app;
+            const handle = document.createElement('div');
+            handle.className = 'zen-drag-handle';
+            app.prepend(handle);
+            makeDraggable(app, handle);
+        });
+
+        pickr.on('change', (color) => {
+            const hex = color.toHEXA().toString();
+            input.style.backgroundColor = hex;
+
+            // Run check on every color change
+            checkContrast(color, input);
+
+            if(color.a < 1) {
+                input.value = hex;
+            } else {
+                input.value = hex.substring(0, 7);
+            }
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+
+        pickr.on('save', () => pickr.hide());
+    }
+
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((m) => {
+            m.addedNodes.forEach((node) => {
+                if (node.nodeType === 1) {
+                    if (node.tagName === 'INPUT' && node.getAttribute('type') === 'color') initColorPicker(node);
+                    node.querySelectorAll?.('input[type="color"]').forEach(initColorPicker);
+                }
+            });
+        });
+    });
+
+    if (document.body) {
+        observer.observe(document.body, { childList: true, subtree: true });
+        document.querySelectorAll('input[type="color"]').forEach(initColorPicker);
+    }
+})();
