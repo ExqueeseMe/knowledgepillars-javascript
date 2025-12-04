@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Lesson 7.1 – Smart Signup Form</title>
+		<style>
+			.error {
+				color: red;
+				font-weight: bold;
+			}
+			.success {
+				color: green;
+				font-weight: bold;
+			}
+			input,
+			label {
+				display: block;
+				margin-bottom: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<h2>User Signup Form</h2>
+		<form id="signupForm">
+			<label>Name:</label>
+			<input type="text" id="nameField" />
+
+			<label>Age:</label>
+			<input type="number" id="ageField" />
+
+			<label>Email:</label>
+			<input type="email" id="emailField" />
+
+			<label>
+				<input type="checkbox" id="termsCheck" />
+				I agree to the Terms and Conditions
+			</label>
+
+			<button type="submit">Submit</button>
+		</form>
+
+		<p id="message"></p>
+
+		<script>
+			document.getElementById("signupForm").addEventListener("submit", function (event) {
+				event.preventDefault();
+
+				const name = document.getElementById("nameField").value.trim();
+				const age = parseInt(document.getElementById("ageField").value);
+				const email = document.getElementById("emailField").value.trim();
+				const agreed = document.getElementById("termsCheck").checked;
+				const messageEl = document.getElementById("message");
+
+				// Clear previous message styles
+				messageEl.classList.remove("error", "success");
+
+				// Validate each field
+				if (name === "") {
+					showMessage("Name is required.", false);
+				} else if (isNaN(age) || age < 13) {
+					showMessage("You must be at least 13 years old to sign up.", false);
+				} else if (!email.includes("@") || !email.includes(".")) {
+					showMessage("Please enter a valid email address.", false);
+				} else if (!agreed) {
+					showMessage("You must agree to the terms and conditions.", false);
+				} else {
+					showMessage(`Success! Welcome, ${name}.`, true);
+				}
+
+				// Function to display feedback
+				function showMessage(msg, isSuccess) {
+					messageEl.textContent = msg;
+					messageEl.classList.add(isSuccess ? "success" : "error");
+					console.log(isSuccess ? "Form submitted successfully." : "Validation failed.");
+				}
+			});
+		</script>
+	</body>
+</html>
