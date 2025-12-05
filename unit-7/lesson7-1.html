@@ -21,10 +21,10 @@
 	<body>
 		<h2>User Signup Form</h2>
 		<form id="signupForm">
-			<label>Name:</label>
+			<label>What is your name?:</label>
 			<input type="text" id="nameField" />
 
-			<label>Age:</label>
+			<label>How old are you?:</label>
 			<input type="number" id="ageField" />
 
 			<label>Email:</label>
@@ -35,6 +35,7 @@
 				I agree to the Terms and Conditions
 			</label>
 
+			<button type="button" onclick="clearForm()">Clear</button>
 			<button type="submit">Submit</button>
 		</form>
 
@@ -73,6 +74,9 @@
 					console.log(isSuccess ? "Form submitted successfully." : "Validation failed.");
 				}
 			});
+			function clearForm() {
+				document.getElementById("signupForm").reset();
+			}
 		</script>
 	</body>
 </html>
