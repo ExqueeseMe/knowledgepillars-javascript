@@ -10,18 +10,103 @@
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
 
-		<!--Profile Maker Web App
-    Add a feature where you can choose your color scheme, and change from dark mode to light mode.
-    
-    --></head>
+	</head>
 	<body>
-		<div id="title-card">
-			<h1>Create a Profile Card!</h1>
-			<p>Press "Start" to begin!</p>
-			<a class="start-button" onclick="startGame()">
-				<p>Start</p>
-				<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
-			</a>
+		<div id="title-card" class="card">
+			<div class="card-content">
+				<h1>Create a Profile Card!</h1>
+				<p>Press "Start" to begin!</p>
+			</div>
+			<div class="card-actions">
+				<a class="button start-button" onclick="startGame()">
+					<p>Start</p>
+					<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
+				</a>
+			</div>
 		</div>
+
+		<div id="details-card" class="card card-hidden">
+			<div class="card-content">
+				<h2>First, enter your details.</h2>
+				<form id="details-form">
+					<p>Name:</p>
+					<input id="name-input" type="text" placeholder="Your Username" required />
+					<p>Favorite Hobby:</p>
+					<input id="hobby-input" type="text" placeholder="Your Favorite Hobby" required />
+				</form>
+			</div>
+			<div class="button-container">
+				<a class="button back-button" onclick="previousPage()">
+					<p>Back</p>
+					<span class="icon-container"><span class="arrows">&lt;&lt;&lt;</span></span>
+				</a>
+				<a class="button next-button" onclick="nextPage()">
+					<p>Next</p>
+					<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
+				</a>
+			</div>
+		</div>
+
+		<div id="picture-card" class="card card-hidden">
+			<h2>Next, add your profile picture:</h2>
+			<div class="button-container">
+				<a class="button back-button" onclick="previousPage()">
+					<p>Back</p>
+					<span class="icon-container"><span class="arrows">&lt;&lt;&lt;</span></span>
+				</a>
+					<a class="button next-button" onclick="nextPage()">
+					<p>Next</p>
+					<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
+				</a>
+			</div>
+		</div>
+
+		<script>
+			const cards = [
+				document.getElementById("title-card"),
+				document.getElementById("details-card"),
+				document.getElementById("picture-card")
+			];
+
+			let currentPage = 0;
+
+			let userData = {
+				name: "",
+				hobby: ""
+			};
+
+			function startGame() {
+				cards[currentPage].classList.add("card-hidden");
+				currentPage++;
+				cards[currentPage].classList.remove("card-hidden");
+			}
+
+			function nextPage() {
+				const currentCard = cards[currentPage];
+				if (currentCard.id === "details-card") {
+					const form = document.getElementById("details-form");
+					if (!form.checkValidity()) {
+						form.reportValidity();
+						return;
+					}
+					userData.name = document.getElementById("name-input").value;
+					userData.hobby = document.getElementById("hobby-input").value;
+					console.log("Current User Data:", userData);
+				}
+				if (currentPage < cards.length - 1) {
+					cards[currentPage].classList.add("card-hidden");
+					currentPage++;
+					cards[currentPage].classList.remove("card-hidden");
+				}
+			}
+
+			function previousPage() {
+				if (currentPage > 0) {
+					cards[currentPage].classList.add("card-hidden");
+					currentPage--;
+					cards[currentPage].classList.remove("card-hidden");
+				}
+			}
+		</script>
 	</body>
 </html>

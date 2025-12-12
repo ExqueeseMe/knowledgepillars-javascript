@@ -4,51 +4,98 @@
 }
 
 body {
-	background: #141414;
-	background: linear-gradient(135deg, rgba(0, 0, 0, 1) 0%, rgba(28, 116, 65, 1) 78%, rgba(32, 166, 88, 1) 92%, rgba(35, 205, 107, 1) 100%);
-	color: white;
-	margin: 0;
-	padding: 0;
-	width: 100%;
-	height: 100vh;
-
+	display: flex;
 	align-items: center;
 	justify-content: center;
-	display: flex;
+	width: 100%;
+	height: 100vh;
+	margin: 0;
+	padding: 0;
+	color: white;
+	background: linear-gradient(135deg, #000 0%, #1c7441 78%, #20a658 92%, #23cd6b 100%);
+	overflow: hidden;
 }
 
-#title-card {
-	height: 20rem;
-	width: 30rem;
-	padding: 2rem;
-	justify-content: center;
-	background-color: #121212;
-	border-radius: 20px;
-	margin: 2rem;
-	box-shadow: 0 0 50px #040404;
-	text-align: center;
+#details-card h2 {
+	margin-top: -1rem;
+}
 
+.card {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	position: absolute;
+	height: 20rem;
+	width: 30rem;
+	padding: 2rem;
+	margin: 2rem;
+	background-color: #121212;
+	border-radius: 48px;
+	box-shadow: 0 0 50px #040404;
+	text-align: center;
+	transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+	box-sizing: border-box;
 }
 
-.start-button {
-	width: 10rem;
+.card-hidden {
+	opacity: 0;
+	transform: scale(0.9);
+	pointer-events: none;
+}
+
+.card-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	flex-grow: 1;
+}
+
+#details-form {
+	display: flex;
+	flex-direction: column;
+	width: 80%;
+	margin-top: 1rem;
+}
+
+#details-form p {
+	text-align: left;
+	font-size: 0.7rem;
+	margin: 0.5rem 0 0.25rem 1rem;
+}
+
+#title-card {
+	justify-content: center;
+}
+
+.button-container {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	width: 100%;
+	gap: 1rem;
+	margin-bottom: -0.5rem;
+}
+
+.button {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 	height: 2.5rem;
 	padding: 0 15px 0 25px;
-	border-radius: 40px;
+	gap: 1rem;
 	border: none;
+	border-radius: 40px;
 	background-color: #20a658;
 	color: #181818;
 	text-align: left;
 	overflow: hidden;
 	position: relative;
+	cursor: pointer;
 	transition: 0.3s;
-
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
 }
 
 .start-button:before {
@@ -62,7 +109,7 @@ body {
 	transition: 0.65s;
 }
 
-.start-button:hover {
+.next-button:hover, .start-button:hover {
 	background-color: #3cbb71;
 	box-shadow: 1px 1px 25px 10px rgba(255, 255, 255, 0.05);
 	transform: scale(1.05);
@@ -72,6 +119,53 @@ body {
 	left: 100%;
 }
 
+.button p {
+	font-size: 0.75rem;
+}
+
+.start-button {
+	width: 10rem;
+	margin-bottom: 1rem;
+}
+
+.back-button {
+	background: #ddd;
+}
+
+.back-button .arrows {
+	color: #ddd;
+}
+
+.back-button, .next-button {
+	width: 6rem;
+}
+
+.back-button:hover {
+	background-color: #fff;
+	box-shadow: 1px 1px 25px 10px rgba(255, 255, 255, 0.05);
+	transform: scale(1.05);
+}
+
+.icon-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.75rem;
+	height: 1.75rem;
+	background-color: #181818;
+	color: #20a658;
+	font-size: 18px;
+	border-radius: 40px;
+	text-align: center;
+	letter-spacing: -1px;
+	overflow: hidden;
+}
+
+.arrows {
+	display: inline-block;
+	margin-top: 1%;
+}
+
 .start-button:hover .arrows {
 	color: #3cbb71;
 	animation: slide-right-loop 0.25s ease-in-out forwards;
@@ -79,31 +173,6 @@ body {
 
 .start-button:not(:hover) .arrows {
 	animation: slide-left-loop 0.25s ease-in-out forwards;
-}
-
-.start-button p {
-	font-size: 0.75rem;
-}
-
-.icon-container {
-	background-color: #181818;
-	color: #20a658;
-	font-size: 18px;
-	border-radius: 40px;
-	width: 2.75rem;
-	height: 1.75rem;
-	text-align: center;
-	letter-spacing: -1px;
-	overflow: hidden;
-
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.arrows {
-	display: inline-block;
-	margin-top: 1%;
 }
 
 @keyframes slide-right-loop {
@@ -131,15 +200,32 @@ body {
 		opacity: 1;
 	}
 	49% {
-		transform: translateX(-150%); /* Slide out to the LEFT */
+		transform: translateX(-150%);
 		opacity: 0;
 	}
 	50% {
-		transform: translateX(150%); /* Teleport to the RIGHT */
+		transform: translateX(150%);
 		opacity: 0;
 	}
 	100% {
-		transform: translateX(0); /* Slide back to center */
+		transform: translateX(0);
 		opacity: 1;
 	}
+}
+
+#details-form {
+	padding: 0 2rem;
+	margin-top: 0;
+}
+
+input {
+	background-color: #ddd;
+	width: 100%;
+	height: 2rem;
+	margin: 0.5rem 0;
+	border: none;
+	border-radius: 40px;
+	text-align: center;
+	font-size: 0.75rem;
+	box-sizing: border-box;
 }
