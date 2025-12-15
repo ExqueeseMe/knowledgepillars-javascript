@@ -16,8 +16,19 @@ body {
 	overflow: hidden;
 }
 
-#details-card h2 {
-	margin-top: -1rem;
+.unselectable-text {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	cursor: default;
+}
+
+h2 {
+	font-size: 1.15rem;
+	margin-top: 0;
+	margin-bottom: 1rem;
 }
 
 .card {
@@ -25,10 +36,9 @@ body {
 	flex-direction: column;
 	align-items: center;
 	justify-content: space-between;
-	gap: 1rem;
 	position: absolute;
-	height: 20rem;
-	width: 30rem;
+	min-height: 20rem;
+	width: 25rem;
 	padding: 2rem;
 	margin: 2rem;
 	background-color: #121212;
@@ -49,26 +59,31 @@ body {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-start;
 	width: 100%;
 	flex-grow: 1;
 }
 
-#details-form {
+.card-content p {
+	text-align: left;
+	font-size: 0.7rem;
+	margin: 0.5rem 0 0.25rem 0;
+}
+
+form {
 	display: flex;
 	flex-direction: column;
 	width: 80%;
-	margin-top: 1rem;
-}
-
-#details-form p {
-	text-align: left;
-	font-size: 0.7rem;
-	margin: 0.5rem 0 0.25rem 1rem;
+	margin-top: 0.5rem;
+	margin-bottom: auto;
 }
 
 #title-card {
 	justify-content: center;
+}
+
+#title-card p {
+	font-size: 0.75rem;
 }
 
 .button-container {
@@ -78,6 +93,7 @@ body {
 	width: 100%;
 	gap: 1rem;
 	margin-bottom: -0.5rem;
+	margin-right: -1.25rem;
 }
 
 .button {
@@ -213,19 +229,50 @@ body {
 	}
 }
 
-#details-form {
-	padding: 0 2rem;
-	margin-top: 0;
-}
-
 input {
 	background-color: #ddd;
 	width: 100%;
-	height: 2rem;
+	max-height: 2rem;
+	min-height: 1.75rem;
 	margin: 0.5rem 0;
 	border: none;
 	border-radius: 40px;
 	text-align: center;
-	font-size: 0.75rem;
+	font-size: 0.65rem;
 	box-sizing: border-box;
+}
+
+#age-number {
+	display: flex;
+	align-items: stretch;
+	justify-content: center;
+	gap: 0;
+	margin: 0.5rem 0 0.5rem 0;
+	height: 2rem;
+}
+
+#age-input {
+	margin: 0;
+}
+
+#age-number button {
+	width: 15%;
+	height: auto;
+	border-radius: 25px;
+	border: #ddd 2px solid;
+	background-color: #ddd;
+	transition: 0.2s ease-in-out;
+	font-size: 0.75rem;
+}
+
+#age-number button:hover {
+	background-color: #fff;
+	box-shadow: 0 0 20px #ffffff35;
+	transform: scale(1.1);
+	border-color: #fff;
+}
+
+#age-number button:active{
+	transform: scale(0.9);
+	transition: 0.05s linear;
 }
