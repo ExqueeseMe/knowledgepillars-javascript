@@ -32,7 +32,7 @@
 					<p>Age:</p>
 					<div id="age-number">
 						<button type="button" id="age-dec-btn" class="age-incdec unselectable-text">-</button>
-						<input id="age-input" name="amount" type="number" min="0"  readonly value="0" required />
+						<input id="age-input" name="amount" type="number" min="0" value="0" required/>
 						<button type="button" id="age-inc-btn" class="age-incdec unselectable-text">+</button>
 					</div>
 				</form>
@@ -56,7 +56,7 @@
 					<p>Favorite Hobby:</p>
 					<input id="hobby-input" type="text" placeholder="Your Favorite Hobby" required />
 					<p>Profile Description:</p>
-					<input id="description-input" type="text" placeholder="Your Profile Description" required />
+					<textarea id="description-input" type="text" placeholder="Your Profile Description" required></textarea>
 				</form>
 			</div>
 			<div class="button-container">
@@ -74,6 +74,11 @@
 		<div id="picture-card" class="card card-hidden">
 			<div class="card-content">
 				<h2>Next, choose your profile picture:</h2>
+				<div id="pfp-options">
+					<img src="images/pfp1.jpg">
+					<img src="images/pfp2.jpg">
+					<img src="images/pfp3.jpg">
+				</div>
 				<form id="picture-form">
 					<input id="picture-input1" type="radio" name="pfp" value="pfp1" required>
 					<input id="picture-input2" type="radio" name="pfp" value="pfp2">
@@ -90,28 +95,69 @@
 					<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
 				</a>
 			</div>
+			<p id="random-text">(no custom pfp because I dont know how to implement that 🥲)</p>
+		</div>
+
+		<div id="color-card" class="card card-hidden">
+			<div class="card-content">
+				<h2>Next, choose your favorite color:</h2>
+				<div id="color-container">
+					<p>Color picker:</p>
+					<input type="color" id="color-picker">
+				</div>
+			</div>
+			<div class="button-container">
+				<a class="button back-button unselectable-text" onclick="previousPage()">
+					<p>Back</p>
+					<span class="icon-container"><span class="arrows">&lt;&lt;&lt;</span></span>
+				</a>
+				<a class="button next-button unselectable-text" onclick="nextPage()">
+					<p>Next</p>
+					<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
+				</a>
+			</div>
+		</div>
+
+		<div id="profile-card" class="card card-hidden">
+			<div class="card-content">
+				<h2>Your Profile</h2>
+			</div>
+			<div class="button-container">
+				<a class="button back-button unselectable-text" onclick="previousPage()">
+					<p>Back</p>
+					<span class="icon-container"><span class="arrows">&lt;&lt;&lt;</span></span>
+				</a>
+				<a class="button next-button unselectable-text" onclick="nextPage()">
+					<p>Next</p>
+					<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
+				</a>
+			</div>
 		</div>
 
 		<script>
-			// List all cards in an array
+			window.onload = function() {
+				document.getElementById('details-form').reset();
+				document.getElementById('moredetails-form').reset();
+				document.getElementById('picture-form').reset();
+			};
+
 			const cards = [
 				document.getElementById("title-card"),
 				document.getElementById("details-card"),
 				document.getElementById("moredetails-card"),
-				document.getElementById("picture-card")
-
+				document.getElementById("picture-card"),
+				document.getElementById("color-card"),
+				document.getElementById("profile-card")
 			];
 
-			// Keep track of the current page
 			let currentPage = 0;
 
-			// Initialize user data
 			let userData = {
 				name: "",
 				age: "",
 				hobby: "",
 				description: "",
-				pfp: 0,
+				pfp: "",
 				color: ""
 			};
 
@@ -127,8 +173,8 @@
 					const form = document.getElementById("details-form");
 					const ageInput = document.getElementById("age-input");
 
-					// --- Custom Validation Logic ---
-					ageInput.setCustomValidity(""); // Clear previous custom messages
+
+					ageInput.setCustomValidity("");
 					if (parseInt(ageInput.value) === 0) {
 						ageInput.setCustomValidity("Please select an age greater than 0.");
 					}
@@ -140,6 +186,32 @@
 
 					userData.name = document.getElementById("name-input").value;
 					userData.age = document.getElementById("age-input").value;
+					console.log("Page switched successfully!")
+					console.log("Current User Data:", userData);
+				} else if (currentCard.id === "moredetails-card") {
+					const form = document.getElementById("moredetails-form");
+					if (!form.checkValidity()) {
+						form.reportValidity();
+						return;
+					}
+					userData.hobby = document.getElementById("hobby-input").value;
+					userData.description = document.getElementById("description-input").value;
+					console.log("Page switched successfully!")
+					console.log("Current User Data:", userData);
+				}  else if (currentCard.id === "picture-card") {
+					const form = document.getElementById("picture-form");
+					if (!form.checkValidity()) {
+						form.reportValidity();
+						return;
+					}
+					const selectedPfp = document.querySelector('input[name="pfp"]:checked');
+					userData.pfp = selectedPfp.value;
+					console.log("Page switched successfully!")
+					console.log("Current User Data:", userData);
+				} else if (currentCard.id === "color-card") {
+					const picker = document.getElementById("color-picker").value;
+					userData.color = picker;
+					console.log("Page switched successfully!")
 					console.log("Current User Data:", userData);
 				}
 
@@ -149,7 +221,6 @@
 					cards[currentPage].classList.remove("card-hidden");
 				}
 			}
-
 			function previousPage() {
 				if (currentPage > 0) {
 					cards[currentPage].classList.add("card-hidden");

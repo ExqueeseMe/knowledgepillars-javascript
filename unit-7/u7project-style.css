@@ -3,6 +3,16 @@
 	font-size: 24px;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+input[type="number"] {
+	-moz-appearance: textfield;
+}
+
 body {
 	display: flex;
 	align-items: center;
@@ -45,7 +55,7 @@ h2 {
 	border-radius: 48px;
 	box-shadow: 0 0 50px #040404;
 	text-align: center;
-	transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+	transition: opacity 0.2s ease-out, transform 0.5s ease-out;
 	box-sizing: border-box;
 }
 
@@ -242,6 +252,19 @@ input {
 	box-sizing: border-box;
 }
 
+textarea {
+	background-color: #ddd;
+	width: 100%;
+	height: 5rem;
+	margin: 0.5rem 0;
+	border: none;
+	border-radius: 20px;
+	text-align: center;
+	font-size: 0.65rem;
+	box-sizing: border-box;
+	resize: none;
+}
+
 #age-number {
 	display: flex;
 	align-items: stretch;
@@ -275,4 +298,43 @@ input {
 #age-number button:active{
 	transform: scale(0.9);
 	transition: 0.05s linear;
+}
+
+#moredetails-form {
+	margin: 0 0 1rem 0;
+}
+
+#random-text {
+	color: #555555;
+	font-size: 0.5rem;
+	margin-top: 1rem;
+	margin-bottom: -1.75rem;
+}
+
+#picture-form {
+	display: flex;
+	flex-direction: row;
+	gap: 1.25rem;
+}
+
+#pfp-options {
+	display: flex;
+	gap: 1rem;
+	margin-top: 1rem;
+}
+
+#pfp-options img {
+	width: 5rem;
+	border-radius: 60px;
+}
+
+#color-container {
+	height: 10rem;
+	margin-top: 0rem;
+}
+
+#color-picker {
+	width: 15rem !important;
+	max-height: 8rem;
+	height: 8rem;
 }
