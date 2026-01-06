@@ -56,7 +56,7 @@
 					<p>Favorite Hobby:</p>
 					<input id="hobby-input" type="text" placeholder="Your Favorite Hobby" required />
 					<p>Profile Description:</p>
-					<textarea id="description-input" type="text" placeholder="Your Profile Description" required></textarea>
+					<textarea id="description-input" type="text" maxlength="270" placeholder="Your Profile Description" required></textarea>
 				</form>
 			</div>
 			<div class="button-container">
@@ -75,9 +75,9 @@
 			<div class="card-content">
 				<h2>Next, choose your profile picture:</h2>
 				<div id="pfp-options">
-					<img src="images/pfp1.jpg">
-					<img src="images/pfp2.jpg">
-					<img src="images/pfp3.jpg">
+					<img class="pfp"  src="images/pfp1.jpg">
+					<img class="pfp"  src="images/pfp2.jpg">
+					<img class="pfp"  src="images/pfp3.jpg">
 				</div>
 				<form id="picture-form">
 					<input id="picture-input1" type="radio" name="pfp" value="pfp1" required>
@@ -121,6 +121,18 @@
 		<div id="profile-card" class="card card-hidden">
 			<div class="card-content">
 				<h2>Your Profile</h2>
+				<div id="profile-container">
+					<img id="profileImg" class="pfp" src="images/pfp1.jpg">
+					<h3>Name: <span id="userNameDisplay">none</span></h3>
+					<h3>Age: <span id="ageDisplay">none</span></h3>
+					<h3>Favorite Hobby: <span id="hobbyDisplay">none</span></h3>
+					<p id="desc-title">Profile Description:</p>
+					<div id="desc-container">
+						<p id="descDisplay">none</p>
+					</div>
+					<h3>Favorite Color:</h3>
+					<div id="fav-color"></div>
+				</div>
 			</div>
 			<div class="button-container">
 				<a class="button back-button unselectable-text" onclick="previousPage()">
@@ -211,6 +223,14 @@
 				} else if (currentCard.id === "color-card") {
 					const picker = document.getElementById("color-picker").value;
 					userData.color = picker;
+
+					document.getElementById("profileImg").src = `images/${userData.pfp}.jpg`;
+					document.getElementById("userNameDisplay").textContent = userData.name;
+					document.getElementById("ageDisplay").textContent = userData.age;
+					document.getElementById("hobbyDisplay").textContent = userData.hobby;
+					document.getElementById("descDisplay").textContent = userData.description;
+					document.getElementById("fav-color").style.backgroundColor = userData.color;
+
 					console.log("Page switched successfully!")
 					console.log("Current User Data:", userData);
 				}
