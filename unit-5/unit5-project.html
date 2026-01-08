@@ -27,7 +27,7 @@
 			}
 
 			function createOrder(name, product, price) {
-				if (price != Number(price)) {
+				if (price !== Number(price)) {
 					console.log("error");
 				} else {
 					orders.push({ name, product, price });

@@ -1,270 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Profile Card Creator</title>
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Profile Card Creator</title>
 
-		<link rel="stylesheet" href="./u7project-style.css" />
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+	<link rel="stylesheet" href="./u7project-style.css" />
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
 
-	</head>
-	<body>
-		<div id="title-card" class="card">
-			<div class="card-content">
-				<h1>Create a Profile Card!</h1>
-				<p>Press "Start" to begin!</p>
+</head>
+<body>
+<div id="title-card" class="card">
+	<div class="card-content">
+		<h1>Create a Profile Card!</h1>
+		<p>Press "Start" to begin!</p>
+	</div>
+	<a class="button start-button unselectable-text" onclick="startGame()">
+		<p>Start</p>
+		<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
+	</a>
+</div>
+
+<div id="details-card" class="card card-hidden">
+	<div class="card-content">
+		<h2>First, enter some personal details.</h2>
+		<form id="details-form">
+			<label for="name-input">Name:</label>
+			<input id="name-input" type="text" placeholder="Your Username" required />
+			<label for="age-input">Age:</label>
+			<div id="age-number">
+				<button type="button" id="age-dec-btn" class="age-incdec unselectable-text">-</button>
+				<input id="age-input" name="amount" type="number" min="0" value="0" required/>
+				<button type="button" id="age-inc-btn" class="age-incdec unselectable-text">+</button>
 			</div>
-			<a class="button start-button unselectable-text" onclick="startGame()">
-				<p>Start</p>
-				<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
-			</a>
+		</form>
+	</div>
+	<div class="button-container">
+		<a class="button back-button unselectable-text" onclick="previousPage()">
+			<p>Back</p>
+			<span class="icon-container"><span class="arrows">&lt;&lt;&lt;</span></span>
+		</a>
+		<a class="button next-button unselectable-text" onclick="nextPage()">
+			<p>Next</p>
+			<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
+		</a>
+	</div>
+</div>
+
+<div id="moredetails-card" class="card card-hidden">
+	<div class="card-content">
+		<h2>Next, personalize your profile.</h2>
+		<form id="moredetails-form">
+			<label for="hobby-input">Favorite Hobby:</label>
+			<input id="hobby-input" type="text" placeholder="Your Favorite Hobby" required />
+			<label for="description-input">Profile Description:</label>
+			<textarea id="description-input" maxlength="270" placeholder="Your Profile Description" required></textarea>
+		</form>
+	</div>
+	<div class="button-container">
+		<a class="button back-button unselectable-text" onclick="previousPage()">
+			<p>Back</p>
+			<span class="icon-container"><span class="arrows">&lt;&lt;&lt;</span></span>
+		</a>
+		<a class="button next-button unselectable-text" onclick="nextPage()">
+			<p>Next</p>
+			<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
+		</a>
+	</div>
+</div>
+
+<div id="picture-card" class="card card-hidden">
+	<div class="card-content">
+		<h2>Next, choose your profile picture:</h2>
+		<div id="pfp-options">
+			<img class="pfp" alt="Blue colored mountain scenery with lake." src="images/pfp1.jpg">
+			<img class="pfp" alt="Green colored mountain scenery with trees and an overpowering yellow sunshine." src="images/pfp2.jpg">
+			<img class="pfp" alt="Greyscale mountain scenery with a mostly black colored landscape." src="images/pfp3.jpg">
 		</div>
+		<form id="picture-form">
+			<input id="picture-input1" type="radio" name="pfp" value="pfp1" aria-label="pfp1" required>
+			<input id="picture-input2" type="radio" name="pfp" value="pfp2" aria-label="pfp2" >
+			<input id="picture-input3" type="radio" name="pfp" value="pfp3" aria-label="pfp3" >
+		</form>
+	</div>
+	<div class="button-container">
+		<a class="button back-button unselectable-text" onclick="previousPage()">
+			<p>Back</p>
+			<span class="icon-container"><span class="arrows">&lt;&lt;&lt;</span></span>
+		</a>
+		<a class="button next-button unselectable-text" onclick="nextPage()">
+			<p>Next</p>
+			<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
+		</a>
+	</div>
+	<p id="random-text">(no custom pfp because I dont know how to implement that 🥲)</p>
+</div>
 
-		<div id="details-card" class="card card-hidden">
-			<div class="card-content">
-				<h2>First, enter some personal details.</h2>
-				<form id="details-form">
-					<p>Name:</p>
-					<input id="name-input" type="text" placeholder="Your Username" required />
-					<p>Age:</p>
-					<div id="age-number">
-						<button type="button" id="age-dec-btn" class="age-incdec unselectable-text">-</button>
-						<input id="age-input" name="amount" type="number" min="0" value="0" required/>
-						<button type="button" id="age-inc-btn" class="age-incdec unselectable-text">+</button>
-					</div>
-				</form>
-			</div>
-			<div class="button-container">
-				<a class="button back-button unselectable-text" onclick="previousPage()">
-					<p>Back</p>
-					<span class="icon-container"><span class="arrows">&lt;&lt;&lt;</span></span>
-				</a>
-				<a class="button next-button unselectable-text" onclick="nextPage()">
-					<p>Next</p>
-					<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
-				</a>
-			</div>
+<div id="color-card" class="card card-hidden">
+	<div class="card-content">
+		<h2>Next, choose your favorite color:</h2>
+		<label for="color-picker">Favorite Color:</label>
+		<div id="color-container">
+			<input type="color" id="color-picker">
 		</div>
+	</div>
+	<div class="button-container">
+		<a class="button back-button unselectable-text" onclick="previousPage()">
+			<p>Back</p>
+			<span class="icon-container"><span class="arrows">&lt;&lt;&lt;</span></span>
+		</a>
+		<a class="button next-button unselectable-text" onclick="nextPage()">
+			<p>Next</p>
+			<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
+		</a>
+	</div>
+</div>
 
-		<div id="moredetails-card" class="card card-hidden">
-			<div class="card-content">
-				<h2>Next, personalize your profile.</h2>
-				<form id="moredetails-form">
-					<p>Favorite Hobby:</p>
-					<input id="hobby-input" type="text" placeholder="Your Favorite Hobby" required />
-					<p>Profile Description:</p>
-					<textarea id="description-input" type="text" maxlength="270" placeholder="Your Profile Description" required></textarea>
-				</form>
+<div id="profile-card" class="card card-hidden">
+	<div class="card-content">
+		<h2>Your Profile</h2>
+		<div id="profile-container">
+			<img id="profileImg" class="pfp" alt="The picture you've selected." src="images/pfp1.jpg">
+			<h3>Name: <span id="userNameDisplay">none</span></h3>
+			<h3>Age: <span id="ageDisplay">none</span></h3>
+			<h3>Favorite Hobby: <span id="hobbyDisplay">none</span></h3>
+			<p id="desc-title">Profile Description:</p>
+			<div id="desc-container">
+				<p id="descDisplay">none</p>
 			</div>
-			<div class="button-container">
-				<a class="button back-button unselectable-text" onclick="previousPage()">
-					<p>Back</p>
-					<span class="icon-container"><span class="arrows">&lt;&lt;&lt;</span></span>
-				</a>
-				<a class="button next-button unselectable-text" onclick="nextPage()">
-					<p>Next</p>
-					<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
-				</a>
-			</div>
+			<h3>Favorite Color:</h3>
+			<div id="fav-color"></div>
 		</div>
+	</div>
+	<div class="button-container" id="restart-container">
+		<a class="button next-button unselectable-text" onclick="nextPage()">
+			<p>Restart</p>
+			<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
+		</a>
+	</div>
+</div>
 
-		<div id="picture-card" class="card card-hidden">
-			<div class="card-content">
-				<h2>Next, choose your profile picture:</h2>
-				<div id="pfp-options">
-					<img class="pfp"  src="images/pfp1.jpg">
-					<img class="pfp"  src="images/pfp2.jpg">
-					<img class="pfp"  src="images/pfp3.jpg">
-				</div>
-				<form id="picture-form">
-					<input id="picture-input1" type="radio" name="pfp" value="pfp1" required>
-					<input id="picture-input2" type="radio" name="pfp" value="pfp2">
-					<input id="picture-input3" type="radio" name="pfp" value="pfp3">
-				</form>
-			</div>
-			<div class="button-container">
-				<a class="button back-button unselectable-text" onclick="previousPage()">
-					<p>Back</p>
-					<span class="icon-container"><span class="arrows">&lt;&lt;&lt;</span></span>
-				</a>
-					<a class="button next-button unselectable-text" onclick="nextPage()">
-					<p>Next</p>
-					<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
-				</a>
-			</div>
-			<p id="random-text">(no custom pfp because I dont know how to implement that 🥲)</p>
-		</div>
+<script>
+	window.onload = function() {
+		document.getElementById('details-form').reset();
+		document.getElementById('moredetails-form').reset();
+		document.getElementById('picture-form').reset();
+	};
 
-		<div id="color-card" class="card card-hidden">
-			<div class="card-content">
-				<h2>Next, choose your favorite color:</h2>
-				<div id="color-container">
-					<p>Color picker:</p>
-					<input type="color" id="color-picker">
-				</div>
-			</div>
-			<div class="button-container">
-				<a class="button back-button unselectable-text" onclick="previousPage()">
-					<p>Back</p>
-					<span class="icon-container"><span class="arrows">&lt;&lt;&lt;</span></span>
-				</a>
-				<a class="button next-button unselectable-text" onclick="nextPage()">
-					<p>Next</p>
-					<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
-				</a>
-			</div>
-		</div>
+	const cards = [
+		document.getElementById("title-card"),
+		document.getElementById("details-card"),
+		document.getElementById("moredetails-card"),
+		document.getElementById("picture-card"),
+		document.getElementById("color-card"),
+		document.getElementById("profile-card")
+	];
 
-		<div id="profile-card" class="card card-hidden">
-			<div class="card-content">
-				<h2>Your Profile</h2>
-				<div id="profile-container">
-					<img id="profileImg" class="pfp" src="images/pfp1.jpg">
-					<h3>Name: <span id="userNameDisplay">none</span></h3>
-					<h3>Age: <span id="ageDisplay">none</span></h3>
-					<h3>Favorite Hobby: <span id="hobbyDisplay">none</span></h3>
-					<p id="desc-title">Profile Description:</p>
-					<div id="desc-container">
-						<p id="descDisplay">none</p>
-					</div>
-					<h3>Favorite Color:</h3>
-					<div id="fav-color"></div>
-				</div>
-			</div>
-			<div class="button-container">
-				<a class="button back-button unselectable-text" onclick="previousPage()">
-					<p>Back</p>
-					<span class="icon-container"><span class="arrows">&lt;&lt;&lt;</span></span>
-				</a>
-				<a class="button next-button unselectable-text" onclick="nextPage()">
-					<p>Next</p>
-					<span class="icon-container"><span class="arrows">&gt;&gt;&gt;</span></span>
-				</a>
-			</div>
-		</div>
+	let currentPage = 0;
 
-		<script>
-			window.onload = function() {
-				document.getElementById('details-form').reset();
-				document.getElementById('moredetails-form').reset();
-				document.getElementById('picture-form').reset();
-			};
+	let userData = {
+		name: "",
+		age: "",
+		hobby: "",
+		description: "",
+		pfp: "",
+		color: ""
+	};
 
-			const cards = [
-				document.getElementById("title-card"),
-				document.getElementById("details-card"),
-				document.getElementById("moredetails-card"),
-				document.getElementById("picture-card"),
-				document.getElementById("color-card"),
-				document.getElementById("profile-card")
-			];
+	function startGame() {
+		cards[currentPage].classList.add("card-hidden");
+		currentPage++;
+		cards[currentPage].classList.remove("card-hidden");
+	}
 
-			let currentPage = 0;
+	function nextPage() {
+		const currentCard = cards[currentPage];
+		if (currentCard.id === "details-card") {
+			const form = document.getElementById("details-form");
+			const ageInput = document.getElementById("age-input");
 
-			let userData = {
-				name: "",
-				age: "",
-				hobby: "",
-				description: "",
-				pfp: "",
-				color: ""
-			};
 
-			function startGame() {
-				cards[currentPage].classList.add("card-hidden");
-				currentPage++;
-				cards[currentPage].classList.remove("card-hidden");
+			ageInput.setCustomValidity("");
+			if (parseInt(ageInput.value) === 0) {
+				ageInput.setCustomValidity("Please select an age greater than 0.");
 			}
 
-			function nextPage() {
-				const currentCard = cards[currentPage];
-				if (currentCard.id === "details-card") {
-					const form = document.getElementById("details-form");
-					const ageInput = document.getElementById("age-input");
-
-
-					ageInput.setCustomValidity("");
-					if (parseInt(ageInput.value) === 0) {
-						ageInput.setCustomValidity("Please select an age greater than 0.");
-					}
-
-					if (!form.checkValidity()) {
-						form.reportValidity();
-						return;
-					}
-
-					userData.name = document.getElementById("name-input").value;
-					userData.age = document.getElementById("age-input").value;
-					console.log("Page switched successfully!")
-					console.log("Current User Data:", userData);
-				} else if (currentCard.id === "moredetails-card") {
-					const form = document.getElementById("moredetails-form");
-					if (!form.checkValidity()) {
-						form.reportValidity();
-						return;
-					}
-					userData.hobby = document.getElementById("hobby-input").value;
-					userData.description = document.getElementById("description-input").value;
-					console.log("Page switched successfully!")
-					console.log("Current User Data:", userData);
-				}  else if (currentCard.id === "picture-card") {
-					const form = document.getElementById("picture-form");
-					if (!form.checkValidity()) {
-						form.reportValidity();
-						return;
-					}
-					const selectedPfp = document.querySelector('input[name="pfp"]:checked');
-					userData.pfp = selectedPfp.value;
-					console.log("Page switched successfully!")
-					console.log("Current User Data:", userData);
-				} else if (currentCard.id === "color-card") {
-					const picker = document.getElementById("color-picker").value;
-					userData.color = picker;
-
-					document.getElementById("profileImg").src = `images/${userData.pfp}.jpg`;
-					document.getElementById("userNameDisplay").textContent = userData.name;
-					document.getElementById("ageDisplay").textContent = userData.age;
-					document.getElementById("hobbyDisplay").textContent = userData.hobby;
-					document.getElementById("descDisplay").textContent = userData.description;
-					document.getElementById("fav-color").style.backgroundColor = userData.color;
-
-					console.log("Page switched successfully!")
-					console.log("Current User Data:", userData);
-				}
-
-				if (currentPage < cards.length - 1) {
-					cards[currentPage].classList.add("card-hidden");
-					currentPage++;
-					cards[currentPage].classList.remove("card-hidden");
-				}
-			}
-			function previousPage() {
-				if (currentPage > 0) {
-					cards[currentPage].classList.add("card-hidden");
-					currentPage--;
-					cards[currentPage].classList.remove("card-hidden");
-				}
+			if (!form.checkValidity()) {
+				form.reportValidity();
+				return;
 			}
 
-			function inc(element) {
-				let el = document.querySelector(`[name="${element}"]`);
-				el.value = parseInt(el.value) + 1;
+			userData.name = document.getElementById("name-input").value;
+			userData.age = document.getElementById("age-input").value;
+			console.log("Page switched successfully!")
+			console.log("Current User Data:", userData);
+		} else if (currentCard.id === "moredetails-card") {
+			const form = document.getElementById("moredetails-form");
+			if (!form.checkValidity()) {
+				form.reportValidity();
+				return;
 			}
-
-			function dec(element) {
-				let el = document.querySelector(`[name="${element}"]`);
-				if (parseInt(el.value) > 0) {
-					el.value = parseInt(el.value) - 1;
-				}
+			userData.hobby = document.getElementById("hobby-input").value;
+			userData.description = document.getElementById("description-input").value;
+			console.log("Page switched successfully!")
+			console.log("Current User Data:", userData);
+		}  else if (currentCard.id === "picture-card") {
+			const form = document.getElementById("picture-form");
+			if (!form.checkValidity()) {
+				form.reportValidity();
+				return;
 			}
+			const selectedPfp = document.querySelector('input[name="pfp"]:checked');
+			userData.pfp = selectedPfp.value;
+			console.log("Page switched successfully!")
+			console.log("Current User Data:", userData);
+		} else if (currentCard.id === "color-card") {
+			userData.color = document.getElementById("color-picker").value;
 
-			document.getElementById("age-inc-btn").addEventListener("click", () => inc("amount"));
-			document.getElementById("age-dec-btn").addEventListener("click", () => dec("amount"));
+			document.getElementById("profileImg").src = `images/${userData.pfp}.jpg`;
+			document.getElementById("userNameDisplay").textContent = userData.name;
+			document.getElementById("ageDisplay").textContent = userData.age;
+			document.getElementById("hobbyDisplay").textContent = userData.hobby;
+			document.getElementById("descDisplay").textContent = userData.description;
+			document.getElementById("fav-color").style.backgroundColor = userData.color;
+
+			console.log("Page switched successfully!")
+			console.log("Current User Data:", userData);
+		}
+
+		if (currentPage === 5) {
+			cards[currentPage].classList.add("card-hidden");
+			currentPage = 0;
+			cards[currentPage].classList.remove("card-hidden");
+			document.getElementById('details-form').reset();
+			document.getElementById('moredetails-form').reset();
+			document.getElementById('picture-form').reset();
+		} else if (currentPage < cards.length - 1) {
+			cards[currentPage].classList.add("card-hidden");
+			currentPage++;
+			cards[currentPage].classList.remove("card-hidden");
+		}
+	}
+	function previousPage() {
+		if (currentPage > 0) {
+			cards[currentPage].classList.add("card-hidden");
+			currentPage--;
+			cards[currentPage].classList.remove("card-hidden");
+		}
+	}
+
+	function inc(element) {
+		let el = document.querySelector(`[name="${element}"]`);
+		el.value = parseInt(el.value) + 1;
+	}
+
+	function dec(element) {
+		let el = document.querySelector(`[name="${element}"]`);
+		if (parseInt(el.value) > 0) {
+			el.value = parseInt(el.value) - 1;
+		}
+	}
+
+	document.getElementById("age-inc-btn").addEventListener("click", () => inc("amount"));
+	document.getElementById("age-dec-btn").addEventListener("click", () => dec("amount"));
 
 
-		</script>
-	</body>
+</script>
+</body>
 </html>
+

@@ -1,6 +1,6 @@
 console.log("Heres all the even numbers until 26:");
 for (let i = 1; i <= 26; i++) {
-	if (i % 2 != 0) {
+	if (i % 2 !== 0) {
 		continue;
 	}
 	console.log(i);

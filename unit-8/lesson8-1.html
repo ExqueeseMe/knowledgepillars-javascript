@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Page Title</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 2em;
+            background-color: #f0f0f0;
+            transition: background-color 0.5s ease;
+        }
+        #jokeCard {
+            background: #fff;
+            padding: 1.5em;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin: 2em auto;
+        }
+        #loading {
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+<h2>Lesson 8.1 - Random Joke Generator</h2>
+<button id="getJokeBtn">Get a Joke</button>
+
+<div id="jokeCard">
+    <p id="loading"></p>
+    <p id="jokeSetup"></p>
+    <p id="jokePunchline"></p>
+</div>
+
+<script>
+    /*
+        Author: [Adrian]
+        Lesson: 8.1 – API Basics with fetch()
+        Description: Fetches a random joke and displays it with delay + feedback
+    */
+
+    const btn = document.getElementById("getJokeBtn");
+    const setupEl = document.getElementById("jokeSetup");
+    const punchlineEl = document.getElementById("jokePunchline");
+    const loadingEl = document.getElementById("loading");
+
+    btn.addEventListener("click", function () {
+        // Reset display
+        setupEl.textContent = "";
+        punchlineEl.textContent = "";
+        loadingEl.textContent = "Loading joke...";
+        document.body.style.backgroundColor = getRandomColor();
+
+        fetch("https://official-joke-api.appspot.com/random_joke")
+            .then(response => {
+                if (!response.ok) throw new Error("Network error");
+                return response.json();
+            })
+            .then(data => {
+                loadingEl.textContent = "";
+                setupEl.textContent = "Haha: " + data.setup;
+
+                setTimeout(() => {
+                    punchlineEl.textContent = "LOL: " + data.punchline;
+                }, 1500);
+            })
+            .catch(error => {
+                loadingEl.textContent = "";
+                setupEl.textContent = "Oops! Something went wrong.";
+                punchlineEl.textContent = "";
+                console.error("Fetch failed:", error);
+            });
+    });
+
+    let hsl = [0, 0, 0]
+
+    function getRandomColor() {
+        const hue = Math.floor(Math.random() * 360);
+        const saturation = 80;
+        const lightness = Math.floor(Math.random() * 10) + 85;
+
+        hsl[0] = hue;
+        hsl[1] = saturation;
+        hsl[2] = lightness;
+
+        console.log(`Background hex code: ${hslToHex(hsl[0], hsl[1], hsl[2])}`)
+
+        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    }
+
+    function hslToHex(h, s, l) {
+        l /= 100;
+        const a = s * Math.min(l, 1 - l) / 100;
+        const f = n => {
+            const k = (n + h / 30) % 12;
+            const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+            return Math.round(255 * color).toString(16).padStart(2, '0');   // convert to Hex and prefix "0" if needed
+        };
+        return `#${f(0)}${f(8)}${f(4)}`;
+    }
+
+</script>
+</body>
+</html>

@@ -52,7 +52,7 @@
 						place = iS + "th";
 					}
 					input = prompt(`Type 5 numbers, this is the ${place} number:`);
-					if (input != Number(input) || input === null) {
+					if (input !== Number(input) || input === null) {
 						console.log("Please type a number");
 						break;
 					}

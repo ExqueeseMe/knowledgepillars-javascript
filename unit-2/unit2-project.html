@@ -66,7 +66,7 @@
 
 			// Question 1: Math
 			let answer1 = prompt(`What is ${number3} x ${number4}?`);
-			if (answer1 == String(answer1) || answer1 === null) {
+			if (answer1 === String(answer1) || answer1 === null) {
 				answer1 = "";
 			} else {
 				answer1 = Number(answer1);
@@ -156,9 +156,9 @@
 			let answer5 = prompt("Type a word that has 6 letters.");
 			if (answer5 === null) {
 				answer5 = "";
-				answer5Length = 0;
+				let answer5Length = 0;
 			} else {
-				answer5Length = answer5.length;
+				let answer5Length = answer5.length;
 			}
 
 			if (answer5Length === 6) {

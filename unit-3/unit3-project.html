@@ -12,10 +12,10 @@
 			let guess = null;
 			let attempts = 0;
 
-			while (guess != randNum) {
+			while (guess !== randNum) {
 				guess = parseInt(prompt("Guess the number I'm thinking of (1-100)"));
 
-				if (attempts === 10 && guess != randNum) {
+				if (attempts === 10 && guess !== randNum) {
 					console.log(`You ran out of tries... the answer was ${randNum}`);
 					document.getElementById("gameResult").textContent = `You ran out of tries... the answer was ${randNum}`;
 					break;

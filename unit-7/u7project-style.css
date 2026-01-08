@@ -35,6 +35,12 @@ body {
 	cursor: default;
 }
 
+label {
+	text-align: left;
+	font-size: 0.7rem;
+	margin: 0.5rem 0 0.25rem 0;
+}
+
 h2 {
 	font-size: 1.15rem;
 	margin-top: 0;
@@ -78,12 +84,6 @@ h3 {
 	justify-content: flex-start;
 	width: 100%;
 	flex-grow: 1;
-}
-
-.card-content p {
-	text-align: left;
-	font-size: 0.7rem;
-	margin: 0.5rem 0 0.25rem 0;
 }
 
 form {
@@ -336,7 +336,7 @@ textarea {
 
 #color-container {
 	height: 10rem;
-	margin-top: 0rem;
+	margin-top: 0;
 }
 
 #color-picker {
@@ -372,4 +372,8 @@ textarea {
 	height: 75px;
 	margin: auto;
 	border-radius: 17px;
+}
+
+#restart-container {
+	justify-content: center;
 }
