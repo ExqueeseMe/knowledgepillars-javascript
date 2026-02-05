@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Lesson 8.2 – Random Quote Fetcher</title>
+    <style>
+        /* Some basic styling (optional) */
+        #quote {
+            font-size: 1.2em;
+            margin-bottom: 0.5em;
+        }
+        #author {
+            font-style: italic;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Random Quote Generator</h1>
+<p id="quote">Click the button to fetch a quote.</p>
+<p id="author"></p>
+<button id="newQuoteBtn">Get New Quote</button>
+
+<script>
+    // Select the elements we'll work with
+    const quoteEl = document.getElementById('quote');
+    const authorEl = document.getElementById('author');
+    const button = document.getElementById('newQuoteBtn');
+
+    // Add an event listener to the button
+    button.addEventListener('click', () => {
+        // When button is clicked, fetch a new quote
+        fetch('https://api.quotable.io')
+            .then(response => response.json())       // parse the JSON from the response
+            .then(data => {
+                // `data` is an object with quote info
+                console.log("Fetched data:", data);    // for debugging, log the whole response object
+                quoteEl.textContent = `"${data.quote}"`;
+                authorEl.textContent = "- Kanye West";
+            })
+            .catch(err => {
+                // In case of a network error, log it (we'll handle errors more in the next lesson)
+                console.error("Error fetching quote:", err);
+                quoteEl.textContent = "Oops, something went wrong. Please try again.";
+                authorEl.textContent = "";
+            });
+    });
+</script>
+
+</body>
+</html>

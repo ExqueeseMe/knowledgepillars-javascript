@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lesson 8.3 – iTunes Search Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+        #results {
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .song {
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px;
+            width: 200px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+        }
+        .song img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .preview {
+            margin-top: 10px;
+            display: block;
+            text-decoration: none;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<h2>iTunes Music Search</h2>
+
+<form id="searchForm">
+    <input type="text" id="searchField" placeholder="Enter artist or song" required />
+    <select id="resultLimit">
+        <option value="5">5 results</option>
+        <option value="10">10 results</option>
+        <option value="15">15 results</option>
+    </select>
+    <button type="submit">Search</button>
+</form>
+
+<div id="results"></div>
+
+<script>
+    /*
+      Author: [Adrian M.]
+      Lesson: 8.3 – Dynamic Search with the iTunes API
+      Description: Builds a music search tool with fetch(), JSON parsing, and dynamic DOM output
+    */
+
+    document.getElementById("searchForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const searchTerm = document.getElementById("searchField").value.trim();
+        const limit = document.getElementById("resultLimit").value;
+        const resultsDiv = document.getElementById("results");
+
+        if (searchTerm === "") {
+            resultsDiv.textContent = "Please enter an artist or song.";
+            return;
+        }
+
+        const url = `https://itunes.apple.com/search?term=${encodeURIComponent(searchTerm)}&limit=${limit}`;
+
+        resultsDiv.innerHTML = "<p>Loading results...</p>";
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) throw new Error("API fetch failed");
+                return response.json();
+            })
+            .then(data => {
+                resultsDiv.innerHTML = "";
+
+                if (data.results.length === 0) {
+                    resultsDiv.textContent = "No results found.";
+                    return;
+                }
+
+                data.results.forEach(song => {
+                    const songCard = document.createElement("div");
+                    songCard.className = "song";
+
+                    songCard.innerHTML = `
+          <img src="${song.artworkUrl100}" alt="Album Art">
+          <strong>${song.trackName}</strong><br>
+          <em>${song.artistName}</em><br>
+          <a class="preview" href="${song.previewUrl}" target="_blank">Preview</a>
+        `;
+
+                    if (!song.trackName) {
+                        songCard.innerHTML = `
+          <img src="${song.artworkUrl100}" alt="Album Art">
+          <strong>${song.collectionName}</strong><br>
+          <em>${song.artistName}</em><br>
+          <a class="preview" href="${song.previewUrl}" target="_blank">Preview</a>
+        `;
+                    }
+                    resultsDiv.appendChild(songCard);
+                });
+            })
+            .catch(error => {
+                console.error("Fetch error:", error);
+                resultsDiv.textContent = "Something went wrong. Try again later.";
+            });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+body {
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: #181818;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#main-card {
+    background-color: #111111;
+    padding: 20px;
+    border-radius: 0px 0px 10px 10px;
+}
+
+#weather-output {
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    background-color: #111111;
+    padding: 20px;
+}
+
+.hidden {
+    display: none;
+
+}
