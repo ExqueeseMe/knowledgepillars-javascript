@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lesson 9.2 – Smart Player Objects</title>
+</head>
+<body>
+<h2>Open the Console!</h2>
+
+<script>
+    // Author: Adrian M.
+    // Lesson 9.2 – Adding Object Behavior
+
+    class Player {
+        constructor(name, score, level) {
+            this.name = name;
+            this.score = score;
+            this.level = level;
+        }
+
+        greet() {
+            console.log(`Hi, I’m ${this.name}, level ${this.level}.`);
+        }
+
+        addPoints(points) {
+            if (points < 0) {
+                this.score -= points;
+                console.log(`${this.name} lost ${Math.abs(points)} points. Total score: ${this.score}`)
+            }  else if (points === 0) {
+                console.log(`${this.name}'s total points did not change. Total score: ${this.score}`)
+            } else if (points > 0) {
+                this.score += points;
+                console.log(`${this.name} gained ${points} points! Total score: ${this.score}`);
+            } else {
+                console.log('Error. Invalid number.')
+            }
+        }
+
+        levelUp() {
+            this.level++;
+            console.log(`${this.name} leveled up! New level: ${this.level}`);
+        }
+
+        resetScore() {
+            this.score = 0;
+            console.log(`${this.name}'s score has been reset to 0.`);
+        }
+
+        showStats() {
+            console.table({
+                Name: this.name,
+                Score: this.score,
+                Level: this.level
+            });
+        }
+
+        status() {
+            console.log(`${this.name} is level ${this.level}! `)
+        }
+    }
+
+    let player1 = new Player("Taylor", 120, 3);
+    let player2 = new Player("Alex", 80, 2);
+
+    // Player 1 actions
+    player1.greet();
+    player1.addPoints(25);
+    player1.addPoints(-25);
+    player1.addPoints(0);
+    player1.addPoints("This is definitely a number");
+    player1.levelUp();
+    player1.showStats();
+    player1.status();
+    // Player 2 actions
+    player2.greet();
+    player2.levelUp();
+    player2.resetScore();
+    player2.showStats();
+    player2.status();
+</script>
+</body>
+</html>
