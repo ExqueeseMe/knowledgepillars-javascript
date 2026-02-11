@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lesson 9.1 – Player Class</title>
+</head>
+<body>
+<h2>Check the Console!</h2>
+
+<script>
+    // Author: Adrian Melendez
+    // Lesson: 9.1 – Your First Class
+
+    // Define the class
+    class Kit {
+        constructor(weapon, level, armor) {
+            this.weapon = weapon;
+            this.level = level;
+            this.armor = armor;
+        }
+
+        listInv() {
+            console.log(`Your weapon is the ${this.weapon}, you are level ${this.level}, and your armor is the ${this.armor}.`)
+        }
+    }
+
+    class Player {
+        constructor(name, kit) {
+            this.name = name;
+            this.kit = kit;
+        }
+
+        greet() {
+            console.log(`Hi, I’m ${this.name} and I use the ${this.kit.weapon} as my weapon, I am level ${this.kit.level}, and my armor is the ${this.kit.armor}.`);
+        }
+    }
+
+    let swordKit = new Kit("Sword", "12", "Steel Armor");
+    let bowKit = new Kit("Bow", "15", "Leather Armor");
+    let axeKit = new Kit("Fire Axe", "18", "Completely Normal Clothes")
+    let averyKit = new Kit("Avery Axe", "Avery", "Avery Armor")
+    let averythethirdKit = new Kit("3 Averys Stacked On Top Of Each Other", "138", "Averys Formed In The Shape Of Clothes")
+    let normalKit = new Kit("Cell Phone", "0", "Business Attire")
+
+    const players = [
+        new Player("Jordan", swordKit),
+        new Player("Taylor", bowKit),
+        new Player("Avery", axeKit),
+        new Player("Avery Again", averyKit),
+        new Player("Avery The Third", averythethirdKit),
+        new Player("Averi with an I", normalKit)
+    ];
+
+    players[0].greet();
+    players[1].greet();
+    players[2].greet();
+    players[3].greet();
+    players[4].greet();
+    players[5].greet();
+
+    const tableData = players.map(players => {
+        return {
+            "Player Name": players.name,
+            "Weapon": players.kit.weapon,
+            "Level": players.kit.level,
+            "Armor": players.kit.armor
+        };
+    })
+
+    console.table(tableData)
+
+</script>
+</body>
+</html>
