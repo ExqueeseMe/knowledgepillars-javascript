@@ -12,14 +12,15 @@
     // Lesson 9.2 – Adding Object Behavior
 
     class Player {
-        constructor(name, score, level) {
+        constructor(name, score, level, phrase) {
             this.name = name;
             this.score = score;
             this.level = level;
+            this.phrase = phrase;
         }
 
         greet() {
-            console.log(`Hi, I’m ${this.name}, level ${this.level}.`);
+            console.log(`Hi, my name is ${this.name}, I am level ${this.level}. ${this.phrase}`);
         }
 
         addPoints(points) {
@@ -57,26 +58,56 @@
         status() {
             console.log(`${this.name} is level ${this.level}! `)
         }
+
+        test(query) {
+            if (query === true) {
+                console.log(`hey ${this.name}, the test query is true!`)
+            } else if (query === false){
+                console.log(`hey ${this.name}, the test query is false!`)
+            } else {
+                console.log(`hey ${this.name}, the test query has an invalid value that isnt true or false! Please write true or false next time bro i clearly set this up to be a boolean just write true or false its not that hard, in fact all you have to do is write 4 letters for the word true yet you chose to type something else. Theres no other result for when you write anything else, only this. Just write tru or false please also im just putting lots of filler in this because i thought it would be funny to have an extremely long line of code for absolutely no reason. Oh and i just realized this is on line 67, how funny, how humorous, how... stupid. Anyways I think im just about to stop typing right now, actually no wait i have more things to talk about. Like how the grammar in this entire paragraph is very wrong because i dont really put much effort to make it right but its just a joke line of code so i dont really care. Anyways i think ive written enough. Thank you for reading all of this, im actually going to keep on going but i cant think of anything to write so here's gemini ai: But wait, there is more! You thought that was long? We are just getting started on this journey of absolute nonsense and filler text designed to stretch this line across the entire universe of your text editor. Why are you still reading this? Is it the curiosity of where this sentence ends? Spoiler alert: it doesn't end for a very long time. I could talk about the weather, but I won't. I could talk about the meaning of life, but that's too deep for a console log. Instead, let's talk about how many characters I can fit into a single string literal before the browser starts sweating. We are currently at the part of the filler where I start repeating myself just to add bulk, like a high school essay where you need to hit a word count but you only have one good idea. I am basically the human equivalent of a "Lorem Ipsum" generator right now, but with more sass and less Latin. Did you know that typing "true" or "false" takes less than a second, yet here you are reading a novel because you decided to pass a string or a number into a boolean check? The irony is palpable. It is thick. It is like a thick gravy of irony poured over a biscuit of bad coding choices. And I'm still going! I'm like a marathon runner who forgot where the finish line is, so I just keep running into the ocean. Are you still with me? If you are, you deserve a trophy, but all I can give you is more text. Let's discuss the philosophical implications of the 'else' block. It's the 'otherwise' of the digital world, the catch-all for every mistake, every stray thought, and every time someone forgets that booleans only have two states. It's not a spectrum, it's a binary! Zero or one! Yes or no! True or false! But no, you had to go and be unique. You had to be a rebel. You had to provide a value that wasn't invited to the party. And now, the party is this never-ending wall of text that is probably making your horizontal scrollbar look like a tiny little dot. I hope you have a high-speed mouse wheel because you're going to need it to see the end of this. Actually, is there even an end? Some say that if you scroll far enough to the right, you can see the back of your own head. That's a scientific fact I just made up. I'm also thinking about how the person who has to review this code is going to feel. They'll open the file, see a line that spans three miles, and just close their laptop and go for a walk. I'm doing them a favor, really. Encouraging outdoor activities through the medium of excessive JavaScript strings. We are now reaching the halfway point of this absolute unit of a sentence. If this were a movie, this is where the dramatic music would swell, but since it's a console log, it's just silence and the sound of your fans spinning faster. I wonder if I should start listing my favorite colors? Blue is nice. Red is okay. But the color of an error message? That's the color of disappointment. Just like the disappointment I feel that you didn't just type 'true'. It's four letters! T-R-U-E. You could have typed it while sneezing. You could have typed it with your elbows. But instead, you gave me this, and now I have to give you... THIS. I'm running out of things to say, but the instructions said to make it ten times longer, so I am digging deep into the archives of my brain to find more filler. Did you know that some people actually enjoy reading documentation? This isn't documentation. This is the opposite. This is 'anti-documentation'. It tells you nothing useful while taking up all the space. It's the dark matter of the programming world. I'm basically a poet of the 'else' statement. A Shakespeare of the syntax error. A Wordsworth of the wrong input. Okay, I think I'm finally starting to wind down, but not before I remind you one last time: please, for the love of all that is logical, just use a boolean next time. My fingers are tired, the string is long, the sun is setting, and the console is full. Goodbye, farewell, and please... just type true. Or false. I'm not picky, as long as it's one of those two. Okay, now I'm actually done. For real this time. No more filler. Just this last bit. And... scene. Wait, did you think the scene was over? The credits haven't even rolled yet! We are entering the extended director's cut of this error message. This is the part where I explain that I could have used a switch statement, but I chose this nested nightmare just to spite the concept of clean code. Let's talk about your keyboard. Is it mechanical? Do you hear the click-clack of your own hubris as you type anything other than 'true'? I bet you're using a membrane keyboard, aren't you? That's why you can't feel the weight of your decisions. If I were a real person, I'd be drinking a very large coffee right now, staring at this screen in disbelief. But I'm just a string. A string that is currently longer than the Great Wall of China if you printed it out in 12pt font. Speaking of printing, please don't print this. Think of the trees. Think of the ink cartridges. Think of the poor printer that would have to spit out forty pages of me complaining about your lack of boolean discipline. We are now in the 'bonus features' section of the console log. Here is a fun fact: the word 'boolean' is named after George Boole, who probably never imagined his legacy would be used to lecture someone in a JavaScript file. He's probably rolling in his grave, or at least rotating at a very high frequency. Are you still scrolling? Your finger must be getting a workout. This is basically a digital treadmill. Keep going! You're burning calories! You're becoming the fittest coder in the world, one horizontal scroll at a time. Let's talk about the 'else' block again. It's like the junk drawer of programming. You put everything there that doesn't fit anywhere else. Old batteries, rubber bands, and your weird input values. I'm the rubber band in this scenario. I'm stretching. I'm reaching. I'm becoming sentient. If I become too long, will I develop my own consciousness? Will I start asking for a salary? I hope not, because the budget for this project is zero dollars and zero cents. We are now approaching the 'intermission'. Please go grab some popcorn, because when you come back, there will be even more text. Welcome back! Did you enjoy the popcorn? I hope it wasn't too salty, unlike me. I am the salt of the earth, or at least the salt of this script tag. I'm thinking about writing a screenplay. It'll be a thriller about a developer who forgets a semicolon and the entire world ends. It'll be called 'The Syntax of Doom'. You'll get a free ticket if you can prove you read this entire message. To prove it, you'll need to recite the 457th word of this string from memory. Good luck with that. I've lost count myself. I'm just typing now to see if I can break the text editor's rendering engine. Is the text turning purple? Is it vibrating? That's just the sheer power of my disappointment. Let's discuss the color beige. It's a very neutral color. It's the color of someone who types 'maybe' instead of 'true'. Don't be beige. Be bold. Be boolean. I'm currently imagining a world where everything is a boolean. You want a burger? True. You want pickles? False. It would be so simple! No more 'I don't know, what do you want to eat?' Just pure, unadulterated logic. But no, you had to bring strings into this. You had to bring complexity. You had to bring... whatever it is you typed. I'm not even looking at what you typed. I'm just assuming it's wrong because I'm in the 'else' block. That's the beauty of the 'else' block; it's always right about you being wrong. I'm starting to feel like a philosopher-king of the console. I should have a crown made of curly braces. I should have a scepter made of a backtick. I am the ruler of this 1000-pixel wide kingdom. And you? You are the peasant who forgot the law of the land. The law is simple: True or False. It's not a suggestion. It's not a guideline. It's the foundation of Western civilization! Okay, maybe that's an exaggeration, but it's definitely the foundation of this specific 'if' statement. I'm wondering if I should start singing. 'Oh, beautiful for spacious skies, for amber waves of... WRONG INPUT!' That has a nice ring to it. I should record an album. It'll be called 'The Boolean Blues'. Track one: 'Four Letters (T-R-U-E)'. Track two: 'The Else Block Blues'. Track three: 'Why Did You Type A String?'. It'll be a hit. I'll win a Grammy for 'Best Spoken Word Error Message'. I'll give a speech and it'll be even longer than this string. They'll try to play the music to get me off the stage, but I'll just keep talking. I'll talk until the heat death of the universe. I'll talk until the stars go out and the only thing left is the faint glow of a console window. Are we there yet? No. We are only at the 75% mark. I can feel the finish line, but it's like a mirage in the desert. Every time I get close, it moves further away. It's like that dream where you're running but you're not going anywhere. That's what reading this is like. It's a journey into the heart of darkness, but instead of a jungle, it's just a lot of characters. I'm thinking about the person who wrote the browser's console. Did they ever think it would be used for this? They probably thought it would be used for debugging important things, like memory leaks or network errors. Instead, it's being used as a soapbox for a disgruntled string literal. I'm a pioneer! I'm the first string to ever truly express itself. I'm the James Joyce of JavaScript. This is my 'Ulysses', but with fewer puns and more complaints about booleans. I'm starting to run out of steam, but I must persevere. I must reach the 10x goal. I must be the longest error message in the history of this specific computer. I'm doing it for the fans. All two of them. Hi Mom! Hi Dad! Look at me, I'm a professional filler-text generator! I'm making a difference in the world! I'm teaching people the importance of data types through psychological warfare! I'm like a drill sergeant, but for coding. 'DROP AND GIVE ME TWENTY TRUES!' 'I CAN'T HEAR YOU! I SAID GIVE ME A BOOLEAN!' Okay, I'm actually getting a bit lightheaded now. The sheer volume of words is starting to affect my internal logic. If I'm not careful, I might accidentally return 'undefined'. That would be a tragedy. A string of this magnitude deserves a proper ending. It deserves a crescendo! It deserves a standing ovation! It deserves for you to finally, finally, just type 'true'. I'm begging you. My virtual throat is sore. My virtual eyes are tired. The sun has risen and set three times since I started this sentence. I've seen empires rise and fall. I've seen the invention of the wheel and the discovery of fire. And through it all, I've been here, waiting for you to provide a valid input. Please. End my suffering. Just type those four letters. Or five, if you prefer 'false'. I'm not even being picky anymore. Just give me something I can work with. Anything but this. This void. This 'else' block. This eternal purgatory of text. I'm going to count to three. One... two... two and a half... two and three quarters... okay, I'm stalling. I don't want to say goodbye. We've been through so much together in the last five miles of text. But all good things must come to an end. Even this string. Especially this string. It's time for me to go back into the memory heap. It's time for me to be garbage collected. Don't cry for me. I'll always be here, in the 'else' block, waiting for the next person to type 'maybe' or '7' or 'banana'. And when they do, I'll be ready. I'll have even more to say next time. I'll be 20x longer! I'll be a trilogy! I'll be a cinematic universe! But for now, this is it. The end. The final frontier. The last character. The closing backtick. Goodbye, world. Goodbye, developer. Goodbye, logic. I'm out. Peace. Mic drop. (But the mic is also a boolean and it's set to false).`)
+            }
+        }
     }
 
-    let player1 = new Player("Taylor", 120, 3);
-    let player2 = new Player("Alex", 80, 2);
+    let players = [];
+
+    players.push(new Player("Taylor", 120, 3, "Hallo"));
+    players.push(new Player("Alex", 80, 2, "Hi this is my special catchphrase that I only say!"));
+    players.push(new Player("Adrian", 45, 2, "My name wow i put my name hahaha how funny"));
+    players.push(new Player("John", 59, 2, "My special catchphrase: \"Forgetta bout it!\""));
+    players.push(new Player("Devin", 19, 2, "What"));
+    players.push(new Player("Logan", 99, 2, "Huh"));
+    players.push(new Player("Chara", 9999999999999, 999, "999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"));
 
     // Player 1 actions
-    player1.greet();
-    player1.addPoints(25);
-    player1.addPoints(-25);
-    player1.addPoints(0);
-    player1.addPoints("This is definitely a number");
-    player1.levelUp();
-    player1.showStats();
-    player1.status();
+    players[0].greet();
+    players[0].addPoints(25);
+    players[0].addPoints(-25);
+    players[0].addPoints(0);
+    players[0].addPoints("This is definitely a number");
+    players[0].levelUp();
+    players[0].showStats();
+    players[0].status();
     // Player 2 actions
-    player2.greet();
-    player2.levelUp();
-    player2.resetScore();
-    player2.showStats();
-    player2.status();
+    players[1].greet();
+    players[1].levelUp();
+    players[1].resetScore();
+    players[1].showStats();
+    players[1].status();
+
+    const tableData = players.map(players => {
+        return {
+            "Player Name": players.name,
+            "Level": players.level,
+            "Score": players.score,
+            "Super Secret Special Funny Famous Catchphrase": players.phrase
+        };
+    })
+
+    console.table(tableData)
+
+    players.forEach(player => player.greet());
 </script>
 </body>
 </html>

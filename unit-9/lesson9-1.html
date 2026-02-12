@@ -51,7 +51,11 @@
         new Player("Averi with an I", normalKit)
     ];
 
-    players.forEach(changeableVariableName => changeableVariableName.greet()); // Testing forEach. The variable name is to remind me that it is a variable that can be named anything, like i.
+    players.forEach(p => p.greet()); // Testing forEach. The variable name is to remind me that it is a variable that can be named anything, like i.
+    console.log("\n\n")
+    for (let p of players) {
+        p.greet();
+    }                       // same thing but formatted differently
 
     const tableData = players.map(players => {
         return {

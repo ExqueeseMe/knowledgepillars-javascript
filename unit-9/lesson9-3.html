@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lesson 9.3 – Player Roster Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+
+        #output div {
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .even {
+            background-color: #d0f0ff;
+        }
+
+        .odd {
+            background-color: #fff0d0;
+        }
+
+        button {
+            margin-top: 6px;
+            margin-left: 6px;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<h2>Player Roster</h2>
+<div id="output"></div>
+<form>
+    <input type="text" name="name" id="name" placeholder="name" required>
+    <input type="number" name="score" id="score" placeholder="score" required>
+    <input type="number" name="level" id="level" placeholder="Level" required>
+    <input type="submit" value="Add Player">
+</form>
+<script>
+    // Author: Adrian M.
+    // Lesson 9.3 – Object Array and DOM Display
+
+    class Player {
+        constructor(name, score, level) {
+            this.name = name;
+            this.score = score;
+            this.level = level;
+        }
+
+        describe() {
+            return `${this.name} – Score: ${this.score}, Level: ${this.level}`;
+        }
+
+        levelUp() {
+            this.level++;
+            console.log(`${this.name} leveled up! New level: ${this.level}`);
+        }
+    }
+
+    let players = [
+        new Player("Jordan", 120, 2),
+        new Player("Taylor", 90, 1),
+        new Player("Alex", 150, 3)
+    ];
+
+    let output = document.getElementById("output");
+
+    function renderPlayers() {
+        output.innerHTML = "";
+        players.forEach((player, index) => {
+            let div = document.createElement("div");
+            div.textContent = player.describe();
+            div.className = (index % 2 === 0) ? "even" : "odd";
+
+            let btn = document.createElement("button");
+            btn.textContent = "Level Up";
+            btn.addEventListener("click", () => {
+                player.levelUp();
+                div.textContent = player.describe();
+                div.appendChild(btn);
+            });
+
+            div.appendChild(btn);
+            output.appendChild(div);
+        });
+    }
+
+    renderPlayers();
+
+    const form = document.querySelector('form');
+
+    form.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const name = document.getElementById("name").value;
+        const score = parseInt(document.getElementById("score").value);
+        const level = parseInt(document.getElementById("level").value);
+
+        const newPlayer = new Player(name, score, level);
+
+        players.push(newPlayer);
+
+        renderPlayers();
+        console.table(tableData);
+
+        form.reset();
+    })
+
+    const tableData = players.map(players => {
+        return {
+            "Player Name": players.name,
+            "Level": players.level,
+            "Score": players.score,
+        };
+    })
+
+    console.table(tableData)
+</script>
+</body>
+</html>
