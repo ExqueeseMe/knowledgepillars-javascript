@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta charset="UTF-8">
 		<title>Unit 2 Project – Quiz App</title>
+		<link rel="stylesheet" href="stylesproject.css" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet" />
 	</head>
 	<body>
 		<div>
 			<h2>Welcome to My Quiz!</h2>
 			<p id="results">You got null out of 5 correct.</p>
 			<p id="details">[Breakdown will go here]</p>
-			<link rel="stylesheet" href="./stylesproject.css" />
-			<link rel="preconnect" href="https://fonts.googleapis.com" />
-			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-			<link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet" />
 		</div>
 		<script>
 			/*
@@ -76,7 +77,7 @@
 				feedback = `Q1: Correct. ${number3} + ${number4} = ${number3 * number4} was the correct answer.\n`;
 				console.log("Q1: Correct");
 			} else if (answer1 === "") {
-				feedback += "";
+				feedback += "Q1: Answer not given.\n";
 				console.log("Q1: Incorrect");
 			} else {
 				feedback += `Q1: Incorrect. Expected ${number3 * number4}, not ${answer1}.\n`;
@@ -93,7 +94,7 @@
 				feedback += `Q2: Correct. ${randomLetters} was the correct answer.\n`;
 				console.log("Q2: Correct");
 			} else if (answer2 === "") {
-				feedback += "";
+				feedback += "Q2: Answer not given.\n";
 				console.log("Q2: Incorrect");
 			} else {
 				feedback += `Q2: Incorrect. Expected ${randomLetters} in all caps, not ${answer2}.\n`;
@@ -128,7 +129,7 @@
 				feedback += `Q3: Correct. ${answer3} was a valid answer.\n`;
 				console.log("Q3: Correct");
 			} else if (answer3 === "") {
-				feedback += "";
+				feedback += "Q3: Answer not given.\n";
 				console.log("Q3: Incorrect");
 			} else {
 				feedback += `Q3: Incorrect. ${answer3} is not recognized as a fruit.\n`;
@@ -145,7 +146,7 @@
 				feedback += `Q4: Correct. ${number1} + ${number2} = ${number1 + number2} was the correct answer.\n`;
 				console.log("Q4: Correct");
 			} else if (answer4 === "") {
-				feedback += "";
+				feedback += "Q4: Answer not given.\n";
 				console.log("Q4: Incorrect");
 			} else {
 				feedback += `Q4: Incorrect. Expected ${number1 + number2}, not ${answer4}.\n`;
@@ -154,11 +155,12 @@
 
 			//Question 5: Word Length
 			let answer5 = prompt("Type a word that has 6 letters.");
+			let answer5Length = 0;
 			if (answer5 === null) {
 				answer5 = "";
-				let answer5Length = 0;
+				answer5Length = 0;
 			} else {
-				let answer5Length = answer5.length;
+				answer5Length = answer5.length;
 			}
 
 			if (answer5Length === 6) {
@@ -166,7 +168,7 @@
 				feedback += `Q5: Correct. ${answer5} was a valid answer.\n`;
 				console.log("Q5: Correct");
 			} else if (answer5 === "") {
-				feedback += "";
+				feedback += "Q5: Answer not given.\n";
 				console.log("Q5: Incorrect");
 			} else {
 				feedback += `Q5: Incorrect. Expected a 6 letter word, not ${answer5}.\n`;
@@ -187,12 +189,9 @@
 				summary += "How.";
 			}
 
-			if (feedback === "") {
-				feedback = "You didn't answer any questions\n";
-			}
-
 			if (answer1 + answer2 + answer3 + answer4 + answer5 === "") {
 				summary = "You got null out of 5 correct.";
+				feedback = "You didn't answer any questions\n";
 			}
 
 			document.getElementById("results").textContent = summary;
