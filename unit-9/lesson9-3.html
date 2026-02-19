@@ -10,7 +10,7 @@
             background-color: #f9f9f9;
         }
 
-        #output div {
+        #output div, #leaderboard div {
             margin: 8px 0;
             padding: 10px;
             border-radius: 6px;
@@ -18,10 +18,18 @@
         }
 
         .even {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
             background-color: #d0f0ff;
         }
 
         .odd {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
             background-color: #fff0d0;
         }
 
@@ -32,17 +40,34 @@
             font-size: 14px;
             cursor: pointer;
         }
+
+        h2 {
+            margin-top: 30px;
+        }
+
+        #leaderboard-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
     </style>
 </head>
 <body>
 <h2>Player Roster</h2>
 <div id="output"></div>
+
+<h3>Add New Player:</h3>
 <form>
     <input type="text" name="name" id="name" placeholder="name" required>
     <input type="number" name="score" id="score" placeholder="score" required>
     <input type="number" name="level" id="level" placeholder="Level" required>
     <input type="submit" value="Add Player">
 </form>
+
+<h2>Power Level Leaderboard</h2>
+<div id="leaderboard"></div>
+
 <script>
     // Author: Adrian M.
     // Lesson 9.3 – Object Array and DOM Display
@@ -58,9 +83,19 @@
             return `${this.name} – Score: ${this.score}, Level: ${this.level}`;
         }
 
+        getPowerLevel() {
+            return this.score * this.level;
+        }
+
         levelUp() {
             this.level++;
             console.log(`${this.name} leveled up! New level: ${this.level}`);
+            renderAll();
+        }
+
+        addScore(points) {
+            this.score += points;
+            renderAll();
         }
     }
 
@@ -70,9 +105,10 @@
         new Player("Alex", 150, 3)
     ];
 
-    let output = document.getElementById("output");
+    const output = document.getElementById("output");
+    const leaderboardOutput = document.getElementById("leaderboard");
 
-    function renderPlayers() {
+    function renderRoster() {
         output.innerHTML = "";
         players.forEach((player, index) => {
             let div = document.createElement("div");
@@ -83,16 +119,61 @@
             btn.textContent = "Level Up";
             btn.addEventListener("click", () => {
                 player.levelUp();
-                div.textContent = player.describe();
-                div.appendChild(btn);
+            });
+
+            let numInput = document.createElement("input");
+            numInput.type = "number";
+            numInput.placeholder = "Points";
+            numInput.style.width = "50px";
+
+            let btn2 = document.createElement("button");
+            btn2.textContent = "Add Score";
+            btn2.addEventListener("click", () => {
+                let points = parseInt(numInput.value) || 0;
+                player.addScore(points);
             });
 
             div.appendChild(btn);
+            div.appendChild(numInput);
+            div.appendChild(btn2);
             output.appendChild(div);
         });
     }
 
-    renderPlayers();
+    function renderLeaderboard() {
+        leaderboardOutput.innerHTML = "";
+
+        let sortedPlayers = [...players];
+        sortedPlayers.sort((a, b) => b.getPowerLevel() - a.getPowerLevel());
+
+        sortedPlayers.forEach((player, index) => {
+            let div = document.createElement("div");
+            let rank = index + 1;
+
+            div.innerHTML = `<h3>${rank}.</h3> ${player.name} – Power: ${player.getPowerLevel()}`;
+
+            div.style.backgroundColor = index === 0 ? "#ffd700" : (index === 1 ? "#c0c0c0" : (index === 2 ? "#cd7f32" : "#ffffff"));
+            div.id = "leaderboard-item";
+
+            leaderboardOutput.appendChild(div);
+        });
+    }
+
+    function renderAll() {
+        renderRoster();
+        renderLeaderboard();
+
+        const tableData = players.map(p => ({
+            "Name": p.name,
+            "Level": p.level,
+            "Score": p.score,
+            "Power": p.getPowerLevel()
+        }));
+        console.clear();
+        console.table(tableData);
+    }
+
+    renderAll();
 
     const form = document.querySelector('form');
 
@@ -104,24 +185,11 @@
         const level = parseInt(document.getElementById("level").value);
 
         const newPlayer = new Player(name, score, level);
-
         players.push(newPlayer);
 
-        renderPlayers();
-        console.table(tableData);
-
+        renderAll();
         form.reset();
-    })
-
-    const tableData = players.map(players => {
-        return {
-            "Player Name": players.name,
-            "Level": players.level,
-            "Score": players.score,
-        };
-    })
-
-    console.table(tableData)
+    });
 </script>
 </body>
 </html>
