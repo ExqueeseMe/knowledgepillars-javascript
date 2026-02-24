@@ -1,3 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Battle Simulator</title>
+</head>
+<body>
+<h1>Battle Simulator</h1>
+
+<div id="output"></div>
+
+<div id="game-inputs">
+    <button id="attack-button">Attack</button>
+    <!-- Defending gives 20TP, which 30 is needed to heal, attacking gives 5TP -->
+    <button id="defend-button">Defend</button>
+    <!-- Player will have 120 health, and healing gives back 45 health -->
+    <button id="heal-button">Heal</button>
+</div>
+
+<script>
+    const output = document.getElementById("output");
+    const attackButton = document.getElementById("attack-button");
+    const defendButton = document.getElementById("defend-button");
+    const healButton = document.getElementById("heal-button");
+
+    class Combatant {
+        constructor(name, hp, maxHp) {
+            this.name = name;
+            this.hp = hp;
+            this.maxHp = maxHp;
+        }
+
+        takeDamage(amount) {
+            this.hp -= amount;
+        }
+
+        heal(amount) {
+            this.hp += amount;
+
+            if (this.hp > this.maxHp) {
+                this.hp = this.maxHp;
+            }
+        }
+    }
+
+    class Player extends Combatant {
+        constructor(name, hp) {
+            super(name, hp, hp);
+
+            this.tp = 0;
+        }
+    }
+</script>
+</body>
+</html>
+
+
+
 <!--
 IDEA FOR PROJECT:
 
