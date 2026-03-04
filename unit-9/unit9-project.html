@@ -14,10 +14,9 @@
 
 <div id="game-inputs">
     <button id="attack-button">Attack</button>
-    <!-- Defending gives 20TP, which 30 is needed to heal, attacking gives 5TP -->
     <button id="defend-button">Defend</button>
-    <!-- Player will have 120 health, and healing gives back 45 health -->
     <button id="heal-button">Heal</button>
+    <button id="special-button">SPECIAL ATTACK (70TP)</button>
 </div>
 
 <script>
@@ -25,34 +24,178 @@
     const attackButton = document.getElementById("attack-button");
     const defendButton = document.getElementById("defend-button");
     const healButton = document.getElementById("heal-button");
+    const specialButton = document.getElementById("special-button");
+
+    // Will make this dynamic to the enemies stats later.
+    let currentAction = "An Enemy appears! Enemy stats: 100hp, ATK 5, DEF 2, LEVEL 3.";
+
 
     class Combatant {
-        constructor(name, hp, maxHp) {
+        constructor(name, hp, maxHp, atk, def) {
             this.name = name;
             this.hp = hp;
             this.maxHp = maxHp;
+            this.atk = atk;
+            this.def = def;
+            this.isDefending = false;
+        }
+        special(target){
+            let rawDamage = 55;
+            let mitigation = target.def * 0.25;
+
+            let damage = Math.ceil(rawDamage) - Math.ceil(mitigation);
+
+            if (damage < 0) damage = 0;
+
+            target.takeDamage(damage, true);
         }
 
-        takeDamage(amount) {
+        attack(target) {
+            let rawDamage = 5 + (5 * (this.atk * 0.25));
+            let mitigation = target.def * 0.25;
+            
+            let damage = Math.ceil(rawDamage) - Math.ceil(mitigation);
+
+            if (damage < 0) damage = 0;
+
+            target.takeDamage(damage, false);
+        }
+
+        takeDamage(amount, special) {
+            if (this.isDefending) {
+                amount = Math.ceil(amount / 2);
+            }
+            
             this.hp -= amount;
+            if (this.hp <= 0) {
+                this.hp = 0;
+                currentAction = `${this.name} is dead, GAME OVER!`;
+            } else if (special === true) {
+                currentAction = `${this.name} got hit by a special attack! ${amount} damage was taken.`
+            } else {
+                currentAction = `${this.name} took ${amount} damage.`;
+            }
+            updateScreen();
         }
 
         heal(amount) {
-            this.hp += amount;
+            if (this.hp >= this.maxHp) {
+                currentAction = `${this.name} tried healing, but HP is full!`;
+            } else {
+                let healAmount = amount;
+                if (this.hp + healAmount > this.maxHp) {
+                    healAmount = this.maxHp - this.hp;
+                }
+                this.hp += healAmount;
+                currentAction = `${this.name} healed ${healAmount} HP!`;
+            }
+            updateScreen();
+        }
 
-            if (this.hp > this.maxHp) {
-                this.hp = this.maxHp;
+        enemyTurn(target) {
+            this.isDefending = false;
+            let choice = Math.floor(Math.random() * 3) + 1;
+
+            if (choice === 1) {
+                this.attack(target);
+            } else if (choice === 2) {
+                this.isDefending = true;
+                currentAction = `${this.name} is defending!`;
+                updateScreen();
+            } else {
+                this.heal(20);
             }
         }
     }
 
     class Player extends Combatant {
-        constructor(name, hp) {
-            super(name, hp, hp);
+        constructor(name, hp, atk, def) {
+            super(name, hp, hp, atk, def);
 
             this.tp = 0;
         }
+
+        playerTurn(action, target) {
+            this.isDefending = false;
+            
+            if (action === "attack") {
+                this.attack(target);
+                this.tp += 5;
+                return true;
+
+            } else if (action === "heal") {
+                if (this.tp >= 30) {
+                    this.heal(25);
+                    this.tp -= 30;
+                    return true;
+                } else {
+                    currentAction = "Not enough TP to heal!";
+                    updateScreen();
+                    return false;
+                }
+
+            } else if (action === "defend") {
+                this.isDefending = true;
+                this.tp += 20;
+                currentAction = `${this.name} is defending!`;
+                updateScreen();
+                return true;
+
+            } else if (action === "special") {
+                this.special(target);
+                this.tp = this.tp - 70;
+                return true;
+            }
+        }
     }
+
+    let hero = new Player("Jimmy", 120, 4, 4);
+    let enemy = new Combatant("Evil Jimmy", 120, 120, 5, 3);
+
+    function toggleButtons(shouldDisable) {
+        attackButton.disabled = shouldDisable;
+        defendButton.disabled = shouldDisable;
+        healButton.disabled = shouldDisable;
+        specialButton.disabled = shouldDisable;
+    }
+    function toggleSpecial() {
+        specialButton.disabled = hero.tp < 70;
+    }
+
+    function handleTurn(action) {
+        if (hero.playerTurn(action, enemy)) {
+            toggleButtons(true);
+            
+            if (enemy.hp <= 0) return;
+
+            setTimeout(() => {
+                enemy.enemyTurn(hero);
+                toggleButtons(false);
+                toggleSpecial();
+            }, 2000);
+        }
+    }
+
+    healButton.addEventListener("click", () => {
+        handleTurn("heal");
+    });
+    attackButton.addEventListener("click", () => {
+        handleTurn("attack");
+    });
+    defendButton.addEventListener("click", () => {
+        handleTurn("defend");
+    });
+    specialButton.addEventListener("click", () => {
+        handleTurn("special");
+    });
+
+    function updateScreen() {
+         output.textContent = `${currentAction} | ${hero.name}: HP ${hero.hp} TP ${hero.tp} | ${enemy.name}: HP ${enemy.hp}`;
+    }
+
+    updateScreen();
+    toggleSpecial();
+
 </script>
 </body>
 </html>
