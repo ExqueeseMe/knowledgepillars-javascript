@@ -1,33 +1,113 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tiny5&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Battle Simulator</title>
+    <style>
+        html {
+            font-family: "Tiny5", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            color: white;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            width: 100%;
+            height: calc(100vh - 10vh);
+            background-image: url("background.jpg");
+            background-size: cover;
+        }
+        .game-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            background-color: #2a2a2a;
+            width: 45rem;
+            border-radius: 15px;
+            padding: 20px;
+        }
+        .rules {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            background-color: #2a2a2a;
+            width: 45rem;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 2rem;
+        }
+        button {
+            width: 10rem;
+            height: 2rem;
+            font-size: 0.75rem;
+            border-radius: 5px;
+        }
+        #attack-button {
+            background-color: red;
+        }
+        #defend-button {
+            background-color: cyan;
+        }
+        #heal-button {
+            background-color: yellowgreen;
+        }
+        #special-button {
+            border-color: black;
+            transition: background-color 0.5s linear;
+        }
+        #output {
+            text-align: center;
+            font-size: 1.25rem;
+        }
+        .hp-text {
+            color: #2ecc71;
+        }
+        .tp-text {
+            color: #f1c40f;
+        }
+    </style>
 </head>
 <body>
-<h1>Battle Simulator</h1>
+<div class="game-card">
 
-<div id="output"></div>
+    <h1>Battle Simulator</h1>
 
-<div id="game-inputs">
-    <button id="attack-button">Attack</button>
-    <button id="defend-button">Defend</button>
-    <button id="heal-button">Heal</button>
-    <button id="special-button">SPECIAL ATTACK (70TP)</button>
+    <div id="output"></div>
+
+    <div id="game-inputs">
+        <button id="attack-button">Attack</button>
+        <button id="defend-button">Defend</button>
+        <button id="heal-button">Heal (30TP)</button>
+        <button id="special-button">SPECIAL ATTACK(100TP)</button>
+    </div>
 </div>
-
+<div class="rules">
+    <p>Game Rules: You take turns battling an enemy who does random moves. <br> <span style="color:red">ATTACK</span> button deals <span style="color:darkred">damage</span> to the enemy based off of your <span style="color:red">ATK</span> and their <span style="color:cyan">DEF</span><br><span style="color:red">ATK</span>: Base <span style="color:darkred">5 damage</span> with <span style="color:yellow">+0.25 multiplier</span> per <span style="color:red">ATK</span> point<br><span style="color:cyan">DEF</span>: <span style="color:yellow">-0.2 multiplier</span> on <span style="color:darkred">damage</span> taken per <span style="color:cyan">DEF</span> point.<br>Every <span style="color:red">attack</span> you attempt will give you <span style="color:orange">5TP</span>, <span style="color:cyan">defending</span> gives <span style="color:orange">20TP</span> but makes you go a turn without dealing any <span style="color:darkred">damage</span>, although if you are <span style="color:red">attacked</span> on the turn you chose <span style="color:cyan">defend</span>, you only get <span style="color:darkred">half damage</span> taken.<br><span style="color:orange">TP</span> is important because it is necessary to <span style="color:greenyellow">heal</span> (<span style="color:greenyellow">Healing</span> gives <span style="color:green">25HP</span>).<br>Another thing you can do with <span style="color:orange">TP</span> is use the special attack, which costs <span style="color:orange">100TP</span> to use. This attack deals <span style="color:darkred">55 damage</span>.</p>
+</div>
 <script>
     const output = document.getElementById("output");
     const attackButton = document.getElementById("attack-button");
     const defendButton = document.getElementById("defend-button");
     const healButton = document.getElementById("heal-button");
     const specialButton = document.getElementById("special-button");
+    output.style.whiteSpace = "pre-line";
 
     // Will make this dynamic to the enemies stats later.
-    let currentAction = "An Enemy appears! Enemy stats: 100hp, ATK 5, DEF 2, LEVEL 3.";
+    let currentAction = "An Enemy appears! Enemy stats: 100hp, ATK 5, DEF 2, LEVEL 3.\n";
 
 
     class Combatant {
@@ -41,7 +121,7 @@
         }
         special(target){
             let rawDamage = 55;
-            let mitigation = target.def * 0.25;
+            let mitigation = target.def * 0.2;
 
             let damage = Math.ceil(rawDamage) - Math.ceil(mitigation);
 
@@ -52,7 +132,7 @@
 
         attack(target) {
             let rawDamage = 5 + (5 * (this.atk * 0.25));
-            let mitigation = target.def * 0.25;
+            let mitigation = target.def * 0.2;
             
             let damage = Math.ceil(rawDamage) - Math.ceil(mitigation);
 
@@ -69,25 +149,25 @@
             this.hp -= amount;
             if (this.hp <= 0) {
                 this.hp = 0;
-                currentAction = `${this.name} is dead, GAME OVER!`;
+                currentAction = `${this.name} is dead, GAME OVER!\n`;
             } else if (special === true) {
-                currentAction = `${this.name} got hit by a special attack! ${amount} damage was taken.`
+                currentAction = `${this.name} got hit by a special attack! ${amount} damage was taken.\n`
             } else {
-                currentAction = `${this.name} took ${amount} damage.`;
+                currentAction = `${this.name} took ${amount} damage.\n`;
             }
             updateScreen();
         }
 
         heal(amount) {
             if (this.hp >= this.maxHp) {
-                currentAction = `${this.name} tried healing, but HP is full!`;
+                currentAction = `${this.name} tried healing, but HP is full!\n`;
             } else {
                 let healAmount = amount;
                 if (this.hp + healAmount > this.maxHp) {
                     healAmount = this.maxHp - this.hp;
                 }
                 this.hp += healAmount;
-                currentAction = `${this.name} healed ${healAmount} HP!`;
+                currentAction = `${this.name} healed ${healAmount} HP!\n`;
             }
             updateScreen();
         }
@@ -100,7 +180,7 @@
                 this.attack(target);
             } else if (choice === 2) {
                 this.isDefending = true;
-                currentAction = `${this.name} is defending!`;
+                currentAction = `${this.name} is defending!\n`;
                 updateScreen();
             } else {
                 this.heal(20);
@@ -129,7 +209,7 @@
                     this.tp -= 30;
                     return true;
                 } else {
-                    currentAction = "Not enough TP to heal!";
+                    currentAction = "Not enough TP to heal!\n";
                     updateScreen();
                     return false;
                 }
@@ -137,13 +217,13 @@
             } else if (action === "defend") {
                 this.isDefending = true;
                 this.tp += 20;
-                currentAction = `${this.name} is defending!`;
+                currentAction = `${this.name} is defending!\n`;
                 updateScreen();
                 return true;
 
             } else if (action === "special") {
                 this.special(target);
-                this.tp = this.tp - 70;
+                this.tp = this.tp - 100;
                 return true;
             }
         }
@@ -159,7 +239,7 @@
         specialButton.disabled = shouldDisable;
     }
     function toggleSpecial() {
-        specialButton.disabled = hero.tp < 70;
+        specialButton.disabled = hero.tp < 100;
     }
 
     function handleTurn(action) {
@@ -190,8 +270,34 @@
     });
 
     function updateScreen() {
-         output.textContent = `${currentAction} | ${hero.name}: HP ${hero.hp} TP ${hero.tp} | ${enemy.name}: HP ${enemy.hp}`;
+         output.innerHTML = `${currentAction} ${hero.name}: <span class="hp-text">HP ${hero.hp}</span> <span class="tp-text">TP ${hero.tp}</span> | ${enemy.name}: <span class="hp-text">HP ${enemy.hp}</span>`;
     }
+
+    const rainbow = [
+        "#FF0000", // Red
+        "#FF7F00", // Orange
+        "#FFFF00", // Yellow
+        "#00FF00", // Green
+        "#00FFFF", // Cyan
+        "#0000FF", // Blue
+        "#4B0082", // Indigo
+        "#9400D3", // Violet
+    ];
+    let currentColor = 0;
+
+    setInterval(() => {
+        if (specialButton.disabled) {
+            specialButton.style.backgroundColor = "";
+        } else {
+            specialButton.style.backgroundColor = rainbow[currentColor];
+        }
+
+        currentColor++;
+
+        if (currentColor >= rainbow.length) {
+            currentColor = 0;
+        }
+    }, 700)
 
     updateScreen();
     toggleSpecial();
@@ -199,8 +305,6 @@
 </script>
 </body>
 </html>
-
-
 
 <!--
 IDEA FOR PROJECT:
@@ -221,5 +325,5 @@ Unit 12 will put some polish into it and make it a shippable product. Game name,
 what they call a "shippable product". Maybe mobile responsiveness? Difficulty modes? Tutorial screen? I'll see.
 
 And I think when im all done I'll start UI/UX. I like programming, but I had more fun with designing. I think if I want to continue programming ill probably
-start learning either Java 25, or Luau. They seem more fun to me, javascript isn't really my thing.
+start learning either Java 25, or Luau. They seem more fun to me, JavaScript isn't really my thing.
 -->
