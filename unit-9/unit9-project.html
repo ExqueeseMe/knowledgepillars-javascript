@@ -32,11 +32,12 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 2rem;
-            background-color: #2a2a2a;
+            gap: 1rem;
+            background-color: #1e1e1e;
             width: 45rem;
-            border-radius: 15px;
             padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px 5px rgba(0,0,0,0.8);
         }
         .rules {
             display: flex;
@@ -44,11 +45,12 @@
             justify-content: center;
             align-items: center;
             gap: 2rem;
-            background-color: #2a2a2a;
+            background-color: #1e1e1e;
             width: 45rem;
             border-radius: 15px;
             padding: 20px;
             margin-top: 2rem;
+            box-shadow: 0 0 15px 5px rgba(0,0,0,0.8);
         }
         button {
             width: 10rem;
@@ -72,12 +74,7 @@
         #output {
             text-align: center;
             font-size: 1.25rem;
-        }
-        .hp-text {
-            color: #2ecc71;
-        }
-        .tp-text {
-            color: #f1c40f;
+            line-height: 3rem;
         }
     </style>
 </head>
@@ -96,7 +93,7 @@
     </div>
 </div>
 <div class="rules">
-    <p>Game Rules: You take turns battling an enemy who does random moves. <br> <span style="color:red">ATTACK</span> button deals <span style="color:darkred">damage</span> to the enemy based off of your <span style="color:red">ATK</span> and their <span style="color:cyan">DEF</span><br><span style="color:red">ATK</span>: Base <span style="color:darkred">5 damage</span> with <span style="color:yellow">+0.25 multiplier</span> per <span style="color:red">ATK</span> point<br><span style="color:cyan">DEF</span>: <span style="color:yellow">-0.2 multiplier</span> on <span style="color:darkred">damage</span> taken per <span style="color:cyan">DEF</span> point.<br>Every <span style="color:red">attack</span> you attempt will give you <span style="color:orange">5TP</span>, <span style="color:cyan">defending</span> gives <span style="color:orange">20TP</span> but makes you go a turn without dealing any <span style="color:darkred">damage</span>, although if you are <span style="color:red">attacked</span> on the turn you chose <span style="color:cyan">defend</span>, you only get <span style="color:darkred">half damage</span> taken.<br><span style="color:orange">TP</span> is important because it is necessary to <span style="color:greenyellow">heal</span> (<span style="color:greenyellow">Healing</span> gives <span style="color:green">25HP</span>).<br>Another thing you can do with <span style="color:orange">TP</span> is use the special attack, which costs <span style="color:orange">100TP</span> to use. This attack deals <span style="color:darkred">55 damage</span>.</p>
+    <p>Game Rules: You take turns battling an enemy who does random moves. <br> <span style="color:red">ATTACK</span> button deals <span style="color:darkred">damage</span> to the enemy based off of your <span style="color:red">ATK</span> and their <span style="color:cyan">DEF</span><br><span style="color:red">ATK</span>: Base <span style="color:darkred">5 damage</span> with <span style="color:yellow">+0.25 multiplier</span> per <span style="color:red">ATK</span> point<br><span style="color:cyan">DEF</span>: <span style="color:yellow">-0.2 multiplier</span> on <span style="color:darkred">damage</span> taken per <span style="color:cyan">DEF</span> point.<br>Every <span style="color:red">attack</span> you attempt will give you <span style="color:orange">5TP</span>, <span style="color:cyan">defending</span> gives <span style="color:orange">20TP</span> but makes you go a turn without dealing any <span style="color:darkred">damage</span>, although if you are <span style="color:red">attacked</span> on the turn you chose <span style="color:cyan">defend</span>, you only get <span style="color:darkred">half damage</span> taken.<br><span style="color:orange">TP</span> is important because it is necessary to <span style="color:greenyellow">heal</span> (<span style="color:greenyellow">Healing</span> gives <span style="color:green">25HP</span>).<br>Another thing you can do with <span style="color:orange">TP</span> is use the special attack, which costs <span style="color:orange">100TP</span> to use. This attack deals <span style="color:darkred">55 damage</span><br><br>NOTE: I know this website isn't the most pretty thing to look at. But this is mostly focused on the logic more than the website design itself. I plan on improving the design in my unit 10 project, where the game will have teams, and different attack types.</p>
 </div>
 <script>
     const output = document.getElementById("output");
@@ -105,10 +102,6 @@
     const healButton = document.getElementById("heal-button");
     const specialButton = document.getElementById("special-button");
     output.style.whiteSpace = "pre-line";
-
-    // Will make this dynamic to the enemies stats later.
-    let currentAction = "An Enemy appears! Enemy stats: 100hp, ATK 5, DEF 2, LEVEL 3.\n";
-
 
     class Combatant {
         constructor(name, hp, maxHp, atk, def) {
@@ -232,6 +225,8 @@
     let hero = new Player("Jimmy", 120, 4, 4);
     let enemy = new Combatant("Evil Jimmy", 120, 120, 5, 3);
 
+    let currentAction = `<span style="color: red">${enemy.name}</span> appears! Enemy stats: <span style="color: lime">HP ${enemy.hp}</span>, <span style="color: red">ATK ${enemy.atk}</span>, <span style="color: cyan">DEF ${enemy.def}</span>\n`;
+
     function toggleButtons(shouldDisable) {
         attackButton.disabled = shouldDisable;
         defendButton.disabled = shouldDisable;
@@ -270,7 +265,7 @@
     });
 
     function updateScreen() {
-         output.innerHTML = `${currentAction} ${hero.name}: <span class="hp-text">HP ${hero.hp}</span> <span class="tp-text">TP ${hero.tp}</span> | ${enemy.name}: <span class="hp-text">HP ${enemy.hp}</span>`;
+         output.innerHTML = `<span style="font-size: 1.75rem; background-color: #040404; border-radius: 5px; padding: 5px;">${currentAction}</span> <span style="background-color: #555555; border-radius: 5px; padding: 5px;">${hero.name}: <span style="color: lime">HP ${hero.hp}</span> <span style="color: orange">TP ${hero.tp}</span> |||||||||||||||||||||||||||||||||||||| ${enemy.name}: <span style="color: lime">HP ${enemy.hp}</span>`;
     }
 
     const rainbow = [
