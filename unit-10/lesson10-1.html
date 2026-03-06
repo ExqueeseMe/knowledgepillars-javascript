@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<head>
+    <title>Lesson 10.1 – Guess the Number (MAR10 day)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 2rem;
+            margin: 0;
+        }
+        #gameArea {
+            background: #f3f3f3;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #feedback {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        #status {
+            color: gray;
+        }
+        #resetBtn {
+            display: none;
+            margin-top: 15px;
+        }
+
+        #resetHardBtn {
+            display: none;
+            margin-top: 15px;
+        }
+
+        #sm64Overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 9999;
+            flex-direction: column;
+        }
+        #timerBanner {
+            background: #d32f2f;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 15px;
+            text-align: center;
+            font-family: monospace;
+        }
+        #sm64Overlay iframe {
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<!-- this is a very dumb website -->
+<body>
+<h2>Guess the Number Game</h2>
+<p>Guess a number between 1 and 10. You have 3 tries. If you guess wrong you'll be forced to play a certain game about a certain plumber from 1996.</p>
+
+<div id="gameArea">
+    <label for="guessInput"></label><input id="guessInput" max="10" min="1" type="number"/>
+    <button id="submitGuess">Guess</button>
+    <button id="resetBtn">Reset Game</button>
+    <button id="resetHardBtn">Reset Game (Hard Mode)</button>
+
+    <p id="feedback"></p>
+    <p id="status"></p>
+</div>
+
+<div id="sm64Overlay">
+    <div id="timerBanner">Time Remaining: 10:00</div>
+    <iframe id="sm64Frame" src="" allow="autoplay; gamepad"></iframe>
+</div>
+
+<script>
+    let target, guessesLeft, gameOver;
+    let sm64Timer;
+
+    const guessInput = document.getElementById("guessInput");
+    const submitBtn = document.getElementById("submitGuess");
+    const feedback = document.getElementById("feedback");
+    const status = document.getElementById("status");
+    const resetBtn = document.getElementById("resetBtn");
+    const resetHardBtn = document.getElementById("resetHardBtn");
+
+    const sm64Overlay = document.getElementById("sm64Overlay");
+    const timerBanner = document.getElementById("timerBanner");
+    const sm64Frame = document.getElementById("sm64Frame");
+
+    const sm64TimerSecs = 300; // 10 minutes = 600 seconds
+    const sm64Url = "https://notan127.github.io/SM64-PC-Port-WebGL/";
+
+    function startGame(hard) {
+        target = Math.floor(Math.random() * 10) + 1;
+        console.log(target);
+        if (hard) {
+            guessesLeft = 2;
+        } else if (!hard) {
+            guessesLeft = 4;
+        }
+        gameOver = false;
+        feedback.textContent = "";
+        status.textContent = `Guesses left: ${guessesLeft}`;
+
+        guessInput.disabled = false;
+        submitBtn.disabled = false;
+        resetBtn.style.display = "none";
+        resetHardBtn.style.display = "none";
+
+        if (sm64Timer) clearInterval(sm64Timer);
+    }
+
+    function endGame(message, color = "black") {
+        feedback.textContent = message;
+        feedback.style.color = color;
+        gameOver = true;
+        guessInput.disabled = true;
+        submitBtn.disabled = true;
+        resetBtn.style.display = "inline-block";
+        resetHardBtn.style.display = "inline-block";
+    }
+
+    function enforcePunishment(callback) {
+        guessInput.disabled = true;
+        submitBtn.disabled = true;
+
+        if (sm64Frame.getAttribute("src") !== sm64Url) {
+            sm64Frame.src = sm64Url;
+        }
+        sm64Overlay.style.display = "flex";
+
+        let timeLeft = sm64TimerSecs;
+        updateTimerDisplay(timeLeft);
+
+        sm64Timer = setInterval(() => {
+            timeLeft--;
+            updateTimerDisplay(timeLeft);
+
+            if (timeLeft <= 0) {
+                clearInterval(sm64Timer);
+                sm64Overlay.style.display = "none";
+
+                guessInput.disabled = false;
+                submitBtn.disabled = false;
+                guessInput.focus();
+
+                if (callback) callback();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        const formattedTime = `${m}:${s.toString().padStart(2, '0')}`;
+        timerBanner.textContent = `INCORRECT! Now you play Mario 64 for ${formattedTime} until you can guess again.`;
+    }
+
+    submitBtn.addEventListener("click", function () {
+        if (gameOver) return;
+
+        const guess = parseInt(guessInput.value);
+        if (isNaN(guess) || guess < 1 || guess > 10) {
+            feedback.textContent = "Please enter a number between 1 and 10.";
+            return;
+        }
+
+        if (guess === target) {
+            endGame("Correct! You win!", "green");
+        } else {
+            guessesLeft--;
+            feedback.textContent = guess < target ? "Too low! (Applying penalty...)" : "Too high! (Applying penalty...)";
+            status.textContent = `Guesses left: ${guessesLeft}`;
+
+            enforcePunishment(() => {
+                feedback.textContent = guess < target ? "Too low!" : "Too high!";
+
+                if (guessesLeft === 0) {
+                    endGame(`Game over! The number was ${target}`, "red");
+                }
+            });
+        }
+
+        guessInput.value = "";
+    });
+
+    resetBtn.addEventListener("click", function() {
+        startGame(false);
+    });
+    resetHardBtn.addEventListener("click", function() {
+        startGame(true);
+    });
+
+    startGame();
+</script>
+</body>
+</html>

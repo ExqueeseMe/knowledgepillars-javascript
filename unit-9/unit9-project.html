@@ -176,7 +176,7 @@
                 currentAction = `${this.name} is defending!\n`;
                 updateScreen();
             } else {
-                this.heal(20);
+                this.heal(Math.floor(Math.random() * 15) + 1);
             }
         }
     }
