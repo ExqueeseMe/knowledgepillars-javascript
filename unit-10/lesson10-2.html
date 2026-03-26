@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lesson 10.2 – Countdown Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 2rem;
+            background-color: #f4f4f4;
+        }
+        #gameArea {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: inline-block;
+        }
+        #clickBtn {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin: 15px;
+        }
+        #startBtn, #resetBtn {
+            margin: 10px;
+        }
+        #timerDisplay {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+        #scoreDisplay {
+            font-size: 20px;
+        }
+        #gameMessage {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        #progressBar {
+            width: 40%;
+            height: 20px;
+            background-color: #555555;
+            position: relative;
+            justify-self: center;
+        }
+
+        #progressBarInner {
+            background-color: green;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<h2>Countdown Challenge</h2>
+
+<div id="gameArea">
+    <p><strong>Goal:</strong> Click the button 10 times before time runs out!</p>
+
+    <button id="startBtn">Start Countdown</button>
+    <button id="resetBtn">Reset Game</button><br>
+
+    <button id="clickBtn" disabled>Click Me!</button>
+
+    <p id="timerDisplay">Time left: 10</p>
+    <div id="progressBar">
+        <div id="progressBarInner"> </div>
+    </div>
+    <p id="scoreDisplay">Clicks: 0</p>
+    <p id="gameMessage"></p>
+</div>
+
+<script>
+    /*
+  Author: [Adrian M]
+  Lesson: 10.2 – Timer-Based Game Logic
+  Description: Click the button 10 times before time runs out to win!
+*/
+
+    let timeLeft = 10;
+    let score = 0;
+    let countdown = null;
+    let gameOver = false;
+
+    const startBtn = document.getElementById("startBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const clickBtn = document.getElementById("clickBtn");
+    const timerDisplay = document.getElementById("timerDisplay");
+    const scoreDisplay = document.getElementById("scoreDisplay");
+    const gameMessage = document.getElementById("gameMessage");
+    const progressBar = document.getElementById("progressBarInner");
+
+    function startGame() {
+        if (countdown || gameOver) return;
+
+        gameOver = false;
+        score = 0;
+        timeLeft = 10;
+        scoreDisplay.textContent = "Clicks: 0";
+        timerDisplay.textContent = "Time left: 10";
+        gameMessage.textContent = "";
+        clickBtn.disabled = false;
+
+        countdown = setInterval(() => {
+            timeLeft--;
+
+            let progressWidth =  timeLeft / 10 * 100;
+
+            if(timeLeft > 0) {
+                progressBar.style.width = progressWidth + "%";
+                checkColor(progressWidth);
+            } else {
+                progressBar.style.width = "0%"
+            }
+
+            timerDisplay.textContent = `Time left: ${timeLeft}`;
+
+            if (timeLeft === 0) {
+                endGame(false);
+            }
+        }, 1000);
+    }
+
+    const checkColor = (width) => {
+        if (width > 60) {
+            progressBar.style.backgroundColor = "green";
+        } else if (width > 30) {
+            progressBar.style.backgroundColor = "yellow";
+        } else {
+            progressBar.style.backgroundColor = "red";
+        }
+    }
+
+    function endGame(won) {
+        clearInterval(countdown);
+        countdown = null;
+        gameOver = true;
+        clickBtn.disabled = true;
+
+        if (won) {
+            gameMessage.textContent = "You win!";
+            gameMessage.style.color = "green";
+        } else {
+            gameMessage.textContent = "Time's up! You lose.";
+            gameMessage.style.color = "red";
+        }
+    }
+
+    clickBtn.addEventListener("click", () => {
+        if (gameOver) return;
+        score++;
+        scoreDisplay.textContent = `Clicks: ${score}`;
+
+        if (score >= 30) {
+            endGame(true);
+        }
+    });
+
+    startBtn.addEventListener("click", startGame);
+
+    resetBtn.addEventListener("click", () => {
+        clearInterval(countdown);
+        countdown = null;
+        gameOver = false;
+        timeLeft = 10;
+        score = 0;
+        timerDisplay.textContent = "Time left: 10";
+        scoreDisplay.textContent = "Clicks: 0";
+        gameMessage.textContent = "";
+        gameMessage.style.color = "black";
+        clickBtn.disabled = true;
+    });
+</script>
+</body>
+</html>
+
