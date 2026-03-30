@@ -105,7 +105,7 @@
         countdown = setInterval(() => {
             timeLeft--;
 
-            let progressWidth =  timeLeft / 10 * 100;
+            let progressWidth =  timeLeft * 10;
 
             if(timeLeft > 0) {
                 progressBar.style.width = progressWidth + "%";

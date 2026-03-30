@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earthbound Party Menu - Fixed Sizing</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            background-color: #040404;
+            min-height: 100vh;
+            max-height: 100vh;
+            margin: 0;
+            font-family: 'Press Start 2P', monospace;
+        }
+
+        #game-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 100vh;
+            width: 60%;
+            background-color: #000;
+            background-image: url("motherbattlebg.gif");
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: center;
+            border: 5px solid #989d8c;
+            border-radius: 12px;
+            outline: 2px solid #f0f1e8;
+            outline-offset: -3.5px;
+            box-sizing: border-box;
+        }
+
+        .party-container {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 6px;
+            margin-bottom: 25px;
+        }
+
+        .earthbound-menu {
+            position: relative;
+            background: repeating-conic-gradient(
+                    #8880d9 0% 25%,
+                    #a491e8 0% 50%
+            ) 50% / 16px 16px;
+
+            border: 5px solid #989d8c;
+            border-radius: 12px;
+            outline: 2px solid #f0f1e8;
+            outline-offset: -3.5px;
+            padding: 10px 10px;
+            width: 105px;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        .character-name {
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+
+            background-color: #000;
+            border-radius: 0px 0px 3px 3px;
+
+            color: #f7f5fd;
+            font-size: 10px;
+            padding: 2px;
+            margin: 0 auto;
+            letter-spacing: 0px;
+        }
+
+        .stat-box {
+            background: linear-gradient(to bottom, #010100 50%, #1a1227 50%);
+            border-radius: 4px;
+            margin-bottom: 5px;
+
+            height: 45px;
+            width: 100%;
+            position: relative;
+        }
+
+        .stat-box:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-label {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            color: #fff;
+            font-size: 4px;
+        }
+
+        .current {
+            position: absolute;
+            top: 3px;
+            left: 1px;
+            width: 100%;
+            text-align: center;
+
+            font-family: 'VT323', monospace;
+            font-size: 38px;
+            color: #f7f5fd;
+            letter-spacing: 2px;
+            line-height: 1;
+        }
+
+        .max {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+
+            font-family: 'Press Start 2P', monospace;
+            font-size: 4px;
+            color: #b0b0b0;
+        }
+
+        .active-character {
+            transform: translateY(-25px);
+        }
+
+        .enemy-sprite {
+            position: absolute;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #enemy-sprite-img {
+            width: 80px;
+        }
+
+
+    </style>
+</head>
+<body>
+<div id="game-container">
+
+    <div class="enemy-sprite">
+        <img id="enemy-sprite-img" src="enemysprite.png">
+    </div>
+
+    <div class="party-container">
+    <fieldset class="earthbound-menu">
+        <legend class="character-name">Ness</legend>
+        <div class="stat-box">
+            <span class="stat-label">HP</span>
+            <span class="current">388</span>
+            <span class="max">/389</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-label">PP</span>
+            <span class="current">062</span>
+            <span class="max">/184</span>
+        </div>
+    </fieldset>
+
+    <fieldset class="earthbound-menu active-character">
+        <legend class="character-name">Paula</legend>
+        <div class="stat-box">
+            <span class="stat-label">HP</span>
+            <span class="current">237</span>
+            <span class="max">/280</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-label">PP</span>
+            <span class="current">132</span>
+            <span class="max">/235</span>
+        </div>
+    </fieldset>
+
+    <fieldset class="earthbound-menu">
+        <legend class="character-name">Jeff</legend>
+        <div class="stat-box">
+            <span class="stat-label">HP</span>
+            <span class="current">037</span>
+            <span class="max">/415</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-label">PP</span>
+            <span class="current">000</span>
+            <span class="max">/0</span>
+        </div>
+    </fieldset>
+
+    <fieldset class="earthbound-menu">
+        <legend class="character-name">Chris</legend>
+        <div class="stat-box">
+            <span class="stat-label">HP</span>
+            <span class="current">198</span>
+            <span class="max">/325</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-label">PP</span>
+            <span class="current">105</span>
+            <span class="max">/189</span>
+        </div>
+    </fieldset>
+
+</div>
+</div>
+</body>
+</html>
