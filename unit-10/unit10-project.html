@@ -1,3 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earthbound Party Menu - Fixed Sizing</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            background-color: #040404;
+            min-height: 100vh;
+            max-height: 100vh;
+            margin: 0;
+            font-family: 'Press Start 2P', monospace;
+        }
+
+        #game-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 100vh;
+            width: 60%;
+            background-color: #000;
+            background-image: url("motherbattlebg.gif");
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: center;
+            border: 7.5px solid #989d8c;
+            border-radius: 18px;
+            outline: 3px solid #f0f1e8;
+            outline-offset: -5.25px;
+            box-sizing: border-box;
+        }
+
+        .party-container {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 9px;
+            margin-bottom: 37.5px;
+        }
+
+        .earthbound-menu {
+            position: relative;
+            background: repeating-conic-gradient(
+                    #8880d9 0% 25%,
+                    #a491e8 0% 50%
+            ) 50% / 24px 24px;
+
+            border: 7.5px solid #989d8c;
+            border-radius: 18px;
+            outline: 3px solid #f0f1e8;
+            outline-offset: -5.25px;
+            padding: 15px 15px;
+            width: 157.5px;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        .character-name {
+            position: absolute;
+            top: -9px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+
+            background-color: #000;
+            border-radius: 0 0 4.5px 4.5px;
+
+            color: #f7f5fd;
+            font-size: 15px;
+            padding: 3px;
+            margin: 0 auto;
+            letter-spacing: 0;
+        }
+
+        .stat-box {
+            background: linear-gradient(to bottom, #010100 50%, #1a1227 50%);
+            border-radius: 6px;
+            margin-bottom: 7.5px;
+
+            height: 67.5px;
+            width: 100%;
+            position: relative;
+        }
+
+        .stat-box:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-label {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            color: #fff;
+            font-size: 8px;
+        }
+
+        .current {
+            position: absolute;
+            top: 4.5px;
+            left: 1.5px;
+            width: 100%;
+            text-align: center;
+
+            font-family: 'VT323', monospace;
+            font-size: 57px;
+            color: #f7f5fd;
+            letter-spacing: 3px;
+            line-height: 1;
+        }
+
+        .max {
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+
+            font-family: 'Press Start 2P', monospace;
+            font-size: 8px;
+            color: #b0b0b0;
+        }
+
+        .active-character {
+            transform: translateY(-37.5px);
+        }
+
+        .enemy-sprite {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #enemy-sprite-img {
+            width: 120px;
+        }
+
+        #action-menu {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+
+            background-color: #1a1227;
+            border: 7.5px solid #989d8c;
+            border-radius: 18px;
+            outline: 3px solid #f0f1e8;
+            outline-offset: -5.25px;
+            padding: 22.5px;
+            color: white;
+            min-width: 225px;
+            min-height: 150px;
+            box-sizing: border-box;
+            font-size: 18px;
+        }
+
+        .action-btn {
+            background-color: transparent;
+            border: none;
+            top: -15px;
+            font-size: 12px;
+            font-family: 'Press Start 2P', monospace;
+            color: white;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .action-btn:hover {
+            text-decoration: underline;
+        }
+
+        #action-log {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            background-color: #1a1227;
+            border: 7.5px solid #989d8c;
+            border-radius: 18px;
+            outline: 3px solid #f0f1e8;
+            outline-offset: -5.25px;
+            padding: 22.5px;
+            color: white;
+            min-width: 225px;
+            min-height: 150px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="game-container">
+    <div id="action-menu">
+        <p class="character-name" id="action-name">Placeholder</p>
+        <button id="btn-bash" class="action-btn">Bash</button><br><br>
+        <button id="btn-defend" class="action-btn">Defend</button><br><br>
+        <button id="btn-psi" class="action-btn">PSI</button><br><br>
+    </div>
+
+    <div id="action-log">
+        Placeholder used placeholder move!
+    </div>
+
+    <div class="enemy-sprite">
+        <img id="enemy-sprite-img" src="enemysprite.png" alt="The enemy">
+    </div>
+    <div class="party-container">
+    <!--
+    Saving this to implement into javascript to be dynamically created.
+    <fieldset class="earthbound-menu active-character">
+        <legend class="character-name">Paula</legend>
+        <div class="stat-box">
+            <span class="stat-label">HP</span>
+            <span class="current">237</span>
+            <span class="max">/280</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-label">PP</span>
+            <span class="current">132</span>
+            <span class="max">/235</span>
+        </div>
+    </fieldset>
+    -->
+
+    </div>
+</div>
+
+<script>
+    const partyContainer = document.querySelector('.party-container');
+    const actionLog = document.getElementById('action-log');
+
+    class PSIattack {
+        constructor(name, ppCost, power, type) {
+            this.name = name;
+            this.ppCost = ppCost;
+            this.power = power;
+            this.type = type;
+        }
+    }
+
+    class Character {
+        constructor(name, maxHP, currentHP, maxPP, currentPP, offense, defense, psiMoves = []) {
+            this.name = name;
+            this.maxHP = maxHP;
+            this.currentHP = currentHP; // You usually want this to start at maxHP!
+            this.maxPP = maxPP;
+            this.currentPP = currentPP;
+            this.offense = offense;
+            this.defense = defense;
+            this.psiMoves = psiMoves; // This will hold your array of PSIattacks
+        }
+    }
+
+    const psiRockin = new PSIattack("PSI Rockin α", 10, 40, "damage");
+    const psiFire = new PSIattack("PSI Fire α", 6, 25, "damage");
+    const lifeup = new PSIattack("Lifeup α", 5, 30, "heal");
+    const disintegrate = new PSIattack("Disintegrate a", 1, 99999, "damage");
+
+    const ness = new Character("Ness", 389, 389, 184, 184, 50, 40, [psiRockin]);
+    const paula = new Character("Paula", 280, 280, 235, 235, 20, 15, [psiFire, lifeup]);
+    const jeff = new Character("Jeff", 415, 415, 0, 0, 45, 25);
+    const bobert = new Character("Bobert", 20, 10, 1, 1, 99, 999, [disintegrate])
+
+    let currentTurnIndex = 0;
+    let isGameOver = false;
+
+    let party = [ness, paula, jeff, bobert];
+
+    function renderParty() {
+        partyContainer.innerHTML = '';
+
+        for (let i=0; i < party.length; i++) {
+            let char = party[i];
+
+            let displayHP = char.currentHP.toString().padStart(3, '0');
+            let displayPP = char.currentPP.toString().padStart(3, '0');
+
+            let charHTML = `
+            <fieldset class="earthbound-menu" id="ui-${i}">
+                <legend class="character-name">${char.name}</legend>
+                <div class="stat-box">
+                    <span class="stat-label">HP</span>
+                    <span class="current">${displayHP}</span>
+                    <span class="max">/${char.maxHP}</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">PP</span>
+                    <span class="current">${displayPP}</span>
+                    <span class="max">/${char.maxPP}</span>
+                </div>
+            </fieldset>
+            `;
+
+            partyContainer.innerHTML += charHTML;
+        }
+    }
+
+    renderParty(); // Test rendering of the party :)
+
+    let enemy = {
+        name: "Robot Thingamajig",
+        currentHP: 300,
+        maxHP: 300,
+        offense: 15,
+        defense: 15
+    }
+
+    function startTurn() {
+        const allBoxes = document.querySelector('.earthbound-menu');
+
+        for (let i=0; i < allBoxes.length; i++) {
+            allBoxes[i].classList.remove('active-character');
+        }
+
+        let currentChar = party[currentTurnIndex];
+
+        let activeBox = document.getElementById(`ui-${currentTurnIndex}`)
+        if (activeBox) {
+            activeBox.classList.add('active-character');
+        }
+        const actionNameDisplay = document.getElementById('action-name');
+        actionNameDisplay.innerText = currentChar.name;
+
+        currentChar.isDefending = false;
+    }
+
+    function preformBash() {
+        let damage = currentChar.offense - enemy.defense;
+
+        if (damage < 1) {
+            damage = 1;
+        }
+
+        enemy.currentHP -= damage;
+
+        actionLog.innerText = `${currentChar.name} used Bash! Dealt ${damage} damage to ${enemy.name}.`;
+
+        passTurn();
+    }
+
+    function preformDefend() {
+        let currentChar = party[currentTurnIndex];
+
+        currentChar.isDefending = true;
+        actionLog.innerText = `${currentChar.name} is on guard!`;
+
+        passTurn();
+    }
+
+    function passTurn() {
+        currentTurnIndex++
+
+        if (currentTurnIndex >= party.length) {
+            actionLog.innerText += "\nEnemy's turn is coming later...";
+
+            currentTurnIndex = 0;
+            startTurn();
+        } else {
+            startTurn();
+        }
+    }
+
+    // Handle Character UI creation depending on number of party members. work on turn logic and work on enemy ai (random for now, unit 11 should be better)
+</script>
+
+</body>
+</html>
+
 <!--
 IDEA FOR PROJECT:
 
