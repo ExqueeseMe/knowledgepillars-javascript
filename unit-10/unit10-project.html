@@ -24,7 +24,7 @@
             justify-content: center;
             align-items: flex-end;
             height: 100vh;
-            width: 60%;
+            width: 1250px;
             background-color: #000;
             background-image: url("motherbattlebg.gif");
             background-repeat: no-repeat;
@@ -59,6 +59,7 @@
             width: 157.5px;
             margin: 0;
             box-sizing: border-box;
+            transition: transform 0.2s ease-in-out;
         }
 
         .character-name {
@@ -128,15 +129,40 @@
             transform: translateY(-37.5px);
         }
 
-        .enemy-sprite {
+        .enemy-container {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centers the health bar under the image */
         }
 
         #enemy-sprite-img {
             width: 120px;
+            margin-bottom: 10px;
+        }
+
+        .enemy-hp-container {
+            width: 100%;
+            height: 10px;
+            background-color: #1a1227;
+            border: 3px solid #989d8c;
+            border-radius: 4px;
+        }
+
+        .enemy-hp-bar {
+            width: 100%;
+            height: 100%;
+            background-color: #ff3333;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .enemy-hp-text {
+            color: #f7f5fd;
+            font-size: 10px;
+            margin-top: 5px;
         }
 
         #action-menu {
@@ -152,7 +178,6 @@
             padding: 22.5px;
             color: white;
             min-width: 225px;
-            min-height: 150px;
             box-sizing: border-box;
             font-size: 18px;
         }
@@ -197,18 +222,29 @@
 <div id="game-container">
     <div id="action-menu">
         <p class="character-name" id="action-name">Placeholder</p>
-        <button id="btn-bash" class="action-btn">Bash</button><br><br>
-        <button id="btn-defend" class="action-btn">Defend</button><br><br>
-        <button id="btn-psi" class="action-btn">PSI</button><br><br>
+
+        <div id="mainmenu-container">
+            <button id="btn-bash" class="action-btn">Bash</button><br><br>
+            <button id="btn-defend" class="action-btn">Defend</button><br><br>
+            <button id="btn-psi" class="action-btn">PSI</button><br><br>
+        </div>
+
+        <div id="submenu-container"></div>
     </div>
 
     <div id="action-log">
-        Placeholder used placeholder move!
+        An enemy appears!
     </div>
 
-    <div class="enemy-sprite">
-        <img id="enemy-sprite-img" src="enemysprite.png" alt="The enemy">
+    <div class="enemy-container" id="enemy-0">
+        <img id="enemy-sprite-img" alt="The enemy">
+
+        <div class="enemy-hp-container">
+            <div class="enemy-hp-bar"></div>
+        </div>
+        <div class="enemy-hp-text">300/300</div>
     </div>
+
     <div class="party-container">
     <!--
     Saving this to implement into javascript to be dynamically created.
@@ -264,7 +300,7 @@
     const ness = new Character("Ness", 389, 389, 184, 184, 50, 40, [psiRockin]);
     const paula = new Character("Paula", 280, 280, 235, 235, 20, 15, [psiFire, lifeup]);
     const jeff = new Character("Jeff", 415, 415, 0, 0, 45, 25);
-    const bobert = new Character("Bobert", 20, 10, 1, 1, 99, 999, [disintegrate])
+    const bobert = new Character("Bobert", 20, 10, 1, 1, 99, 1, [disintegrate])
 
     let currentTurnIndex = 0;
     let isGameOver = false;
@@ -300,18 +336,19 @@
         }
     }
 
-    renderParty(); // Test rendering of the party :)
+    renderParty();
 
     let enemy = {
-        name: "Robot Thingamajig",
-        currentHP: 300,
-        maxHP: 300,
-        offense: 15,
-        defense: 15
+        name: "Robot",
+        currentHP: 999,
+        maxHP: 999,
+        offense: 500,
+        defense: 99,
+        sprite: "enemysprite.png"
     }
 
     function startTurn() {
-        const allBoxes = document.querySelector('.earthbound-menu');
+        const allBoxes = document.querySelectorAll('.earthbound-menu');
 
         for (let i=0; i < allBoxes.length; i++) {
             allBoxes[i].classList.remove('active-character');
@@ -330,6 +367,8 @@
     }
 
     function preformBash() {
+        let currentChar = party[currentTurnIndex];
+
         let damage = currentChar.offense - enemy.defense;
 
         if (damage < 1) {
@@ -352,20 +391,181 @@
         passTurn();
     }
 
+    function updateStats() {
+        for (let i = 0; i < party.length; i++) {
+            let char = party[i];
+
+            if (char.currentHP < 0) {
+                char.currentHP = 0;
+            }
+
+            let displayHP = char.currentHP.toString().padStart(3, '0');
+            let displayPP = char.currentPP.toString().padStart(3, '0');
+
+            let box = document.getElementById(`ui-${i}`);
+
+            if (box) {
+                let currentSpans = box.querySelectorAll('.current');
+
+                currentSpans[0].innerText = displayHP;
+                currentSpans[1].innerText = displayPP;
+            }
+        }
+
+        if (enemy.currentHP < 0) enemy.currentHP = 0;
+
+        document.getElementById('enemy-sprite-img').src = enemy.sprite;
+
+        let hpPercentage = (enemy.currentHP / enemy.maxHP) * 100;
+
+        document.querySelector('.enemy-hp-bar').style.width = `${hpPercentage}%`
+        document.querySelector('.enemy-hp-text').innerText = `${enemy.currentHP}/${enemy.maxHP}`
+    }
+
+    updateStats();
+
     function passTurn() {
+        updateStats();
         currentTurnIndex++
 
         if (currentTurnIndex >= party.length) {
-            actionLog.innerText += "\nEnemy's turn is coming later...";
-
-            currentTurnIndex = 0;
-            startTurn();
+            enemyTurn();
         } else {
             startTurn();
         }
     }
 
-    // Handle Character UI creation depending on number of party members. work on turn logic and work on enemy ai (random for now, unit 11 should be better)
+    document.getElementById('btn-bash').addEventListener('click', preformBash);
+    document.getElementById('btn-defend').addEventListener('click', preformDefend);
+
+    startTurn();
+
+    function openPsiMenu() {
+        let currentChar = party[currentTurnIndex];
+        const actMenu = document.getElementById('action-menu');
+
+        if (currentChar.psiMoves.length === 0) {
+            const actionLog = document.getElementById('action-log');
+            actionLog.innerText = `${currentChar.name} doesn't know any PSI!`;
+        } else {
+            document.getElementById('mainmenu-container').style.display = 'none';
+
+            const submenu = document.getElementById('submenu-container');
+            submenu.style.display = 'block';
+
+            let buttonsHTML = '';
+
+            for (let i=0; i < currentChar.psiMoves.length; i++) {
+                let move = currentChar.psiMoves[i];
+
+                buttonsHTML += `
+                    <button class="action-btn psi-attack-btn" data-index="${i}">
+                    ${move.name}<br>(${move.ppCost} PP)
+                    </button><br><br>
+                    `;
+            }
+
+            buttonsHTML += `
+            <button id="btn-back" class="action-btn">Back</button>
+            `;
+
+            submenu.innerHTML = buttonsHTML;
+
+            document.getElementById('btn-back').addEventListener('click', closePsiMenu);
+
+            const spellButtons = document.querySelectorAll('.psi-attack-btn');
+            for (let i=0; i<spellButtons.length; i++) {
+                spellButtons[i].addEventListener('click', castPsi);
+            }
+        }
+
+    }
+
+    function closePsiMenu() {
+        document.getElementById('submenu-container').style.display = 'none';
+
+        document.getElementById('mainmenu-container').style.display = 'block';
+    }
+
+    document.getElementById('btn-psi').addEventListener('click', openPsiMenu);
+
+    function castPsi(event) {
+        let currentChar = party[currentTurnIndex];
+        let clickedButton = event.target;
+        let spellIndex = clickedButton.getAttribute('data-index');
+        let spell = currentChar.psiMoves[spellIndex];
+
+        const actionLog = document.getElementById('action-log');
+
+        if (currentChar.currentPP < spell.ppCost) {
+            actionLog.innerText = "Not enough PP!";
+            return;
+        }
+
+        currentChar.currentPP -= spell.ppCost;
+
+        if (spell.type === "damage") {
+            enemy.currentHP -= spell.power;
+            actionLog.innerText = `${currentChar.name} tried ${spell.name}! Dealt ${spell.power} damage to ${enemy.name}.`;
+        } else if (spell.type === "heal") {
+            currentChar.currentHP += spell.power;
+
+            if (currentChar.currentHP > currentChar.maxHP) {
+                currentChar.currentHP = currentChar.maxHP;
+            }
+
+            actionLog.innerText = `${currentChar.name} used ${spell.name}! Recovered ${spell.power} HP.`;
+        }
+        closePsiMenu();
+        passTurn();
+    }
+
+    function enemyTurn() {
+        document.getElementById('action-menu').style.display = 'none';
+        const partyMenu = document.querySelectorAll('.earthbound-menu');
+        const arrayAmount = partyMenu.length - 1;
+
+        partyMenu[arrayAmount].classList.remove('active-character');
+        setTimeout(function() {
+            const actionLog = document.getElementById('action-log');
+            actionLog.innerText = `${enemy.name} is plotting...`;
+
+            setTimeout(function() {
+                let alivePartyMembers = [];
+
+                for (let i = 0; i < party.length; i++) {
+                    if (party[i].currentHP > 0) {
+                        alivePartyMembers.push(party[i]);
+                    }
+                }
+
+                if (alivePartyMembers.length === 0) {
+                    actionLog.innerText = `${enemy.name} is sad because they're all dead :(`
+                }
+                let randomIndex = Math.floor(Math.random() * alivePartyMembers.length);
+
+                let target = alivePartyMembers[randomIndex];
+
+                let damage = enemy.offense - target.defense;
+                if (damage < 1) damage = 1;
+
+                if (target.isDefending === true) {
+                    damage = Math.floor(damage / 2);
+                    actionLog.innerText = `${enemy.name} attacked ${target.name}, but they guarded! Took ${damage} damage.`
+                } else {
+                    actionLog.innerText = `${enemy.name} attacked ${target.name}! Dealt ${damage} damage.`;
+                }
+
+                target.currentHP -= damage;
+                updateStats();
+                currentTurnIndex = 0;
+
+                document.getElementById('action-menu').style.display = 'block';
+                startTurn();
+            }, 2000);
+        }, 2500);
+    }
+    // remember to implement a visual damage system to make the party member box turn red and shake when damaged, and the same for the enemy sprite.
 </script>
 
 </body>
