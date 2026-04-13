@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Earthbound Party Menu - Fixed Sizing</title>
+    <title>Earthbound Type RPG Sim</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 
@@ -136,7 +136,7 @@
             transform: translate(-50%, -50%);
             display: flex;
             flex-direction: column;
-            align-items: center; /* Centers the health bar under the image */
+            align-items: center;
         }
 
         #enemy-sprite-img {
@@ -216,6 +216,32 @@
             font-size: 16px;
         }
 
+        @keyframes takeDamage {
+            0% { transform: translateX(0); filter: brightness(1) sepia(0) hue-rotate(0deg) saturate(1); }
+            20% { transform: translateX(-8px); filter: brightness(0.8) sepia(1) hue-rotate(-50deg) saturate(5); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-8px); }
+            80% { transform: translateX(8px); filter: brightness(0.8) sepia(1) hue-rotate(-50deg) saturate(5); }
+            100% { transform: translateX(0); filter: brightness(1) sepia(0) hue-rotate(0deg) saturate(1); }
+        }
+
+        .damage-taken {
+            animation: takeDamage 0.4s ease-in-out;
+        }
+
+        @keyframes healGiven {
+            0% { transform: scale(1); filter: brightness(1) sepia(0) hue-rotate(0deg) saturate(1); }
+            50% { transform: scale(1.05); filter: brightness(1.2) sepia(1) hue-rotate(90deg) saturate(4); }
+            100% { transform: scale(1); filter: brightness(1) sepia(0) hue-rotate(0deg) saturate(1); }
+        }
+
+        .heal-given {
+            animation: healGiven 0.5s ease-in-out;
+        }
+
+        .downed-member {
+            filter: grayscale(100%);
+        }
     </style>
 </head>
 <body>
@@ -249,7 +275,8 @@
 
     <div class="party-container">
     <!--
-    Saving this to implement into javascript to be dynamically created.
+    Party UI element html, this is added to the ui by the js.
+
     <fieldset class="earthbound-menu active-character">
         <legend class="character-name">Paula</legend>
         <div class="stat-box">
@@ -285,12 +312,12 @@
         constructor(name, maxHP, currentHP, maxPP, currentPP, offense, defense, psiMoves = []) {
             this.name = name;
             this.maxHP = maxHP;
-            this.currentHP = currentHP; // You usually want this to start at maxHP!
+            this.currentHP = currentHP;
             this.maxPP = maxPP;
             this.currentPP = currentPP;
             this.offense = offense;
             this.defense = defense;
-            this.psiMoves = psiMoves; // This will hold your array of PSIattacks
+            this.psiMoves = psiMoves;
         }
     }
 
@@ -299,10 +326,10 @@
     const lifeup = new PSIattack("Lifeup α", 5, 30, "heal");
     const disintegrate = new PSIattack("Disintegrate a", 1, 99999, "damage");
 
-    const ness = new Character("Ness", 389, 389, 184, 184, 50, 40, [psiRockin]);
-    const paula = new Character("Paula", 280, 280, 235, 235, 20, 15, [psiFire, lifeup]);
+    const ness = new Character("Ness", 389, 389, 184, 0, 50, 40, [psiRockin]);
+    const paula = new Character("Paula", 280, 280, 235, 0, 20, 15, [psiFire, lifeup]);
     const jeff = new Character("Jeff", 415, 415, 0, 0, 45, 25);
-    const bobert = new Character("Bobert", 20, 10, 1, 1, 99, 1, [disintegrate])
+    const bobert = new Character("Bobert", 20, 10, 1, 0, 99, 1, [disintegrate])
 
     let currentTurnIndex = 0;
     let isGameOver = false;
@@ -341,7 +368,7 @@
     renderParty();
 
     let enemy = {
-        name: "Robot",
+        name: "Robot", //I haven't actually played earthbound forgive me for not knowing the name :sob:
         currentHP: 1670,
         maxHP: 1670,
         offense: 68,
@@ -380,6 +407,7 @@
         enemy.currentHP -= damage;
 
         actionLog.innerText = `${currentChar.name} used Bash! Dealt ${damage} damage to ${enemy.name}.`;
+        triggerDamageAnimation('enemy-sprite-img');
 
         updateStats();
         if (checkGameState() === true) return;
@@ -392,6 +420,13 @@
 
         currentChar.isDefending = true;
         actionLog.innerText = `${currentChar.name} is on guard!`;
+        if (currentChar.maxPP === currentChar.currentPP) {
+            currentChar.currentPP += 0;
+        } else if ((currentChar.maxPP - currentChar.currentPP) < 10) {
+            currentChar.currentPP += (currentChar.maxPP - currentChar.currentPP);
+        } else {
+            currentChar.currentPP += 10;
+        }
 
         passTurn();
     }
@@ -432,6 +467,10 @@
     function passTurn() {
         updateStats();
         currentTurnIndex++
+
+        while (currentTurnIndex < party.length && party[currentTurnIndex].currentHP <= 0) {
+            currentTurnIndex++;
+        }
 
         if (currentTurnIndex >= party.length) {
             enemyTurn();
@@ -506,25 +545,81 @@
             return;
         }
 
+        if (spell.type === "damage") {
+            currentChar.currentPP -= spell.ppCost;
+
+            enemy.currentHP -= spell.power;
+            triggerDamageAnimation('enemy-sprite-img');
+
+            actionLog.innerText = `${currentChar.name} tried ${spell.name}! Dealt ${spell.power} damage to ${enemy.name}.`;
+
+            closePsiMenu();
+            updateStats();
+            if (checkGameState() === true) return;
+            passTurn();
+
+        } else if (spell.type === "heal") {
+            openTargetMenu(spellIndex);
+        }
+    }
+
+    function openTargetMenu(spellIndex) {
+        const submenu = document.getElementById('submenu-container');
+
+        let buttonsHTML = '<p style="font-size: 10px; margin-bottom: 10px;">To who?</p>';
+
+        for (let i = 0; i < party.length; i++) {
+            buttonsHTML += `
+                <button class="action-btn target-btn" data-target="${i}" data-spell="${spellIndex}">
+                    ${party[i].name}
+                </button><br><br>
+            `;
+        }
+
+        buttonsHTML += `
+        <button id="btn-target-back" class="action-btn">Back</button>
+        `;
+
+        submenu.innerHTML = buttonsHTML;
+
+        document.getElementById('btn-target-back').addEventListener('click', openPsiMenu);
+
+        const targetButtons = document.querySelectorAll('.target-btn');
+        for (let i = 0; i < targetButtons.length; i++) {
+            targetButtons[i].addEventListener('click', executeHeal);
+        }
+    }
+
+    function executeHeal(event) {
+        let currentChar = party[currentTurnIndex];
+        let clickedButton = event.target;
+
+        let targetIndex = clickedButton.getAttribute('data-target');
+        let spellIndex = clickedButton.getAttribute('data-spell');
+
+        let target = party[targetIndex];
+        let spell = currentChar.psiMoves[spellIndex];
+
         currentChar.currentPP -= spell.ppCost;
 
-        if (spell.type === "damage") {
-            enemy.currentHP -= spell.power;
-            actionLog.innerText = `${currentChar.name} tried ${spell.name}! Dealt ${spell.power} damage to ${enemy.name}.`;
-        } else if (spell.type === "heal") {
-            currentChar.currentHP += spell.power;
+        let startingHP = target.currentHP;
 
-            if (currentChar.currentHP > currentChar.maxHP) {
-                currentChar.currentHP = currentChar.maxHP;
-            }
+        target.currentHP += spell.power;
 
-            actionLog.innerText = `${currentChar.name} used ${spell.name}! Recovered ${spell.power} HP.`;
+        if (target.currentHP > target.maxHP) {
+            target.currentHP = target.maxHP;
+        }
+
+        let actualHealAmount = target.currentHP - startingHP;
+        triggerHealAnimation(`ui-${targetIndex}`);
+
+        if (actualHealAmount === 0) {
+            document.getElementById('action-log').innerText = `${currentChar.name} used ${spell.name} on ${target.name}! But they were already max HP.`;
+        } else {
+        document.getElementById('action-log').innerText = `${currentChar.name} used ${spell.name} on ${target.name}! Recovered ${actualHealAmount} HP.`;
         }
         closePsiMenu();
-
         updateStats();
-        if (checkGameState() === true) return;
-
         passTurn();
     }
 
@@ -565,10 +660,25 @@
                 }
 
                 target.currentHP -= damage;
+
+                if (target.currentHP <= 0) {
+                    actionLog.innerText += `\n${target.name} got hurt and collapsed...`;
+                }
+
+                let trueTargetIndex = party.indexOf(target);
+
+
+                triggerDamageAnimation(`ui-${trueTargetIndex}`);
+
                 updateStats();
                 if (checkGameState() === true) return;
 
                 currentTurnIndex = 0;
+
+                while (currentTurnIndex < party.length && party[currentTurnIndex].currentHP <= 0) {
+                    currentTurnIndex++;
+                }
+
                 document.getElementById('action-menu').style.display = 'block';
                 startTurn();
             }, 2000);
@@ -594,6 +704,28 @@
         startTurn();
     }
 
+    function triggerDamageAnimation(elementId) {
+        let element = document.getElementById(elementId);
+        if (element) {
+            element.classList.add('damage-taken');
+
+            setTimeout(function() {
+                element.classList.remove('damage-taken');
+            }, 400);
+        }
+    }
+
+    function triggerHealAnimation(elementId) {
+        let element = document.getElementById(elementId);
+        if (element) {
+            element.classList.add('heal-given');
+
+            setTimeout(function() {
+                element.classList.remove('heal-given');
+            }, 500);
+        }
+    }
+
     function checkGameState() {
         if (enemy.currentHP <= 0) {
             document.getElementById('mainmenu-container').style.display = 'none';
@@ -602,6 +734,12 @@
             document.getElementById('action-log').innerText += `\n\nYOU WON! ${enemy.name} was defeated!`;
             return true;
 
+        }
+
+        for (let i=0; i<party.length; i++) {
+            if (party[i].currentHP === 0 && document.getElementById(`ui-${i}`).classList.contains('downed-member') === false) {
+                document.getElementById(`ui-${i}`).classList.add('downed-member');
+            }
         }
 
         let isPartyDead = true;
@@ -623,16 +761,7 @@
         return false;
     }
     document.getElementById('btn-restart').addEventListener('click', restartGame);
-    // remember to implement a visual damage system to make the party member box turn red and shake when damaged, and the same for the enemy sprite.
 </script>
 
 </body>
 </html>
-
-<!--
-IDEA FOR PROJECT:
-
-Turn based RPG with team members. Each team member has a unique weapon and ability, and so do the enemies. The Players, and Enemies will have their own classes
-to track what weapons they have, what hp they have, and to add functions to deal damage and to attack. Enemies moves will be random, like: using an attack,
-healing a team member, or defending/shielding. There will be no art because I just want it to be a simple text game.
--->
