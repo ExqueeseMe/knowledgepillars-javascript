@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Lesson 11.1 – Multi-View App</title>
+    <!--suppress CssUnusedSymbol -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .nav button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+        .view {
+            display: none;
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+        }
+
+        .active {
+            display: block;
+            opacity: 1;
+        }
+
+        section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Multi-View App Layout</h2>
+
+<div class="nav">
+    <button onclick="goToView('homeView')">Home</button>
+    <button onclick="goToView('gameView')">Game</button>
+    <button onclick="goToView('resultView')">Results</button>
+</div>
+
+<section id="homeView" class="view">
+    <h3>Home Screen</h3>
+    <p>Welcome! Click "Game" to begin playing.</p>
+</section>
+
+<section id="gameView" class="view">
+    <h3>Game Screen</h3>
+    <p>This is where your game will go.</p>
+    <button onclick="goToView('resultView')">Finish Game</button>
+</section>
+
+<section id="resultView" class="view">
+    <h3>Results Screen</h3>
+    <p>Game over! Your results will appear here.</p>
+    <button onclick="goToView('homeView')">Play Again</button>
+</section>
+
+<script>
+    let currentView = '';
+
+    function goToView(viewId) {
+        document.querySelectorAll('.view').forEach(view => {
+            view.classList.remove('active');
+        });
+
+        const nextView = document.getElementById(viewId);
+        nextView.classList.add('active');
+        currentView = viewId;
+        console.log("Current View:", currentView);
+    }
+
+    goToView('homeView');
+</script>
+
+</body>
+</html>

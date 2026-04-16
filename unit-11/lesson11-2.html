@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lesson 11.2 – Modular View & Game Logic</title>
+    <style>
+        .view { display: none; }
+        .active { display: block; }
+        .nav { margin: 10px; }
+        button { margin: 8px; padding: 10px; }
+    </style>
+</head>
+<body>
+
+<h2>Multi-View Game</h2>
+
+<section id="homeView" class="view">
+    <h3>Home</h3>
+    <p>Welcome to the game! Click below to begin.</p>
+    <button onclick="startGame()">Start Game</button>
+</section>
+
+<section id="gameView" class="view">
+    <h3>Game</h3>
+    <p>Click to score points. Reach 5 to win.</p>
+    <button onclick="addPoint()">Click Me</button>
+    <p id="gameOutput"></p>
+</section>
+
+<section id="resultView" class="view">
+    <h3>Results</h3>
+    <p id="resultMessage"></p>
+    <p id="viewsVisitedMessage"></p>
+    <button onclick="resetGame()">Try Again</button>
+</section>
+
+<script>
+    /*
+  Author: Adrian M
+  Lesson: 11.2 – Refactor to Functions
+  Description: Modular view navigation + scoring game
+*/
+
+    let score = 0;
+    let currentView = 'homeView';
+    let viewsVisited = new Set();
+
+    function goToView(viewId) {
+        document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+        currentView = viewId;
+        viewsVisited.add(viewId);
+        console.log(`Navigated to: ${viewId}`);
+    }
+
+    function startGame() {
+        score = 0;
+        document.getElementById("gameOutput").textContent = "Score: 0";
+        goToView("gameView");
+    }
+
+    function addPoint() {
+        score++;
+        document.getElementById("gameOutput").textContent = `Score: ${score}`;
+        if (score >= 5) endGame();
+    }
+
+    function endGame() {
+        document.getElementById("resultMessage").textContent = `You scored ${score} points!`;
+        document.getElementById("viewsVisitedMessage").textContent =
+            `You visited ${viewsVisited.size} views: ${Array.from(viewsVisited).join(", ")}`;
+        goToView("resultView");
+    }
+
+    function resetGame() {
+        score = 0;
+        viewsVisited.clear();
+        goToView("homeView");
+    }
+
+    goToView("homeView");
+</script>
+
+</body>
+</html>
+
