@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earthbound Type RPG Sim</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            background-color: #040404;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Press Start 2P', monospace;
+            align-items: center;
+        }
+
+        .party-container {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 9px;
+            margin-bottom: 37.5px;
+        }
+
+        .earthbound-menu {
+            position: relative;
+            background: repeating-conic-gradient(
+                    #8880d9 0% 25%,
+                    #a491e8 0% 50%
+            ) 50% / 24px 24px;
+
+            border: 7.5px solid #989d8c;
+            border-radius: 18px;
+            outline: 3px solid #f0f1e8;
+            outline-offset: -5.25px;
+            padding: 15px 15px;
+            width: 157.5px;
+            margin: 0;
+            box-sizing: border-box;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .character-name {
+            position: absolute;
+            top: -9px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+
+            background-color: #000;
+            border-radius: 0 0 4.5px 4.5px;
+
+            color: #f7f5fd;
+            font-size: 15px;
+            padding: 3px;
+            margin: 0 auto;
+            letter-spacing: 0;
+        }
+
+        .stat-box {
+            background: linear-gradient(to bottom, #010100 50%, #1a1227 50%);
+            border-radius: 6px;
+            margin-bottom: 7.5px;
+
+            height: 67.5px;
+            width: 100%;
+            position: relative;
+        }
+
+        .stat-box:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-label {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            color: #fff;
+            font-size: 8px;
+        }
+
+        .current {
+            position: absolute;
+            top: 4.5px;
+            left: 1.5px;
+            width: 100%;
+            text-align: center;
+
+            font-family: 'VT323', monospace;
+            font-size: 57px;
+            color: #f7f5fd;
+            letter-spacing: 3px;
+            line-height: 1;
+        }
+
+        .max {
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+
+            font-family: 'Press Start 2P', monospace;
+            font-size: 8px;
+            color: #b0b0b0;
+        }
+
+        .active-character {
+            transform: translateY(-37.5px);
+        }
+
+        .enemy-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #enemy-sprite-img {
+            width: 120px;
+            margin-bottom: 10px;
+        }
+
+        .enemy-hp-container {
+            width: 100%;
+            height: 10px;
+            background-color: #1a1227;
+            border: 3px solid #989d8c;
+            border-radius: 4px;
+        }
+
+        .enemy-hp-bar {
+            width: 100%;
+            height: 100%;
+            background-color: #ff3333;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .enemy-hp-text {
+            color: #f7f5fd;
+            font-size: 10px;
+            margin-top: 5px;
+        }
+
+        #action-menu {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+
+            background-color: #1a1227;
+            border: 7.5px solid #989d8c;
+            border-radius: 18px;
+            outline: 3px solid #f0f1e8;
+            outline-offset: -5.25px;
+            padding: 22.5px;
+            color: white;
+            min-width: 225px;
+            box-sizing: border-box;
+            font-size: 18px;
+        }
+
+        .action-btn {
+            background-color: transparent;
+            border: none;
+            top: -15px;
+            font-size: 12px;
+            font-family: 'Press Start 2P', monospace;
+            color: white;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .action-btn:hover {
+            text-decoration: underline;
+        }
+
+        #action-log {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            background-color: #1a1227;
+            border: 7.5px solid #989d8c;
+            border-radius: 18px;
+            outline: 3px solid #f0f1e8;
+            outline-offset: -5.25px;
+            padding: 22.5px;
+            color: white;
+            min-width: 225px;
+            min-height: 150px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        @keyframes takeDamage {
+            0% { transform: translateX(0); filter: brightness(1) sepia(0) hue-rotate(0deg) saturate(1); }
+            20% { transform: translateX(-8px); filter: brightness(0.8) sepia(1) hue-rotate(-50deg) saturate(5); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-8px); }
+            80% { transform: translateX(8px); filter: brightness(0.8) sepia(1) hue-rotate(-50deg) saturate(5); }
+            100% { transform: translateX(0); filter: brightness(1) sepia(0) hue-rotate(0deg) saturate(1); }
+        }
+
+        .damage-taken {
+            animation: takeDamage 0.4s ease-in-out;
+        }
+
+        @keyframes healGiven {
+            0% { transform: scale(1); filter: brightness(1) sepia(0) hue-rotate(0deg) saturate(1); }
+            50% { transform: scale(1.05); filter: brightness(1.2) sepia(1) hue-rotate(90deg) saturate(4); }
+            100% { transform: scale(1); filter: brightness(1) sepia(0) hue-rotate(0deg) saturate(1); }
+        }
+
+        .heal-given {
+            animation: healGiven 0.5s ease-in-out;
+        }
+
+        .downed-member {
+            filter: grayscale(100%);
+        }
+
+        #title-screen {
+            color: white;
+            box-sizing: border-box;
+            padding: 50px;
+            width: 85%;
+            height: 95%;
+            background-image: url("motherbattlebg.gif");
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: column;
+            border: 7.5px solid #989d8c;
+            border-radius: 18px;
+            outline: 3px solid #f0f1e8;
+            outline-offset: -5.25px;
+        }
+
+        #title-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        #game-container {
+            display: none;
+            position: relative;
+            justify-content: center;
+            align-items: flex-end;
+            height: 100vh;
+            width: 1250px;
+            background-color: #000;
+            background-image: url("motherbattlebg.gif");
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: center;
+            border: 7.5px solid #989d8c;
+            border-radius: 18px;
+            outline: 3px solid #f0f1e8;
+            outline-offset: -5.25px;
+            box-sizing: border-box;
+        }
+
+        #text-box {
+            border: 7.5px solid #989d8c;
+            border-radius: 18px;
+            outline: 3px solid #f0f1e8;
+            outline-offset: -5.25px;
+            box-sizing: border-box;
+            width: 50rem;
+            padding: 15px;
+            background: #1a1227;
+            line-height: 25px;
+        }
+
+        #start-button {
+            background-color: transparent;
+            border: none;
+            top: -15px;
+            font-size: 24px;
+            font-family: 'Press Start 2P', monospace;
+            color: white;
+            padding: 15px;
+            cursor: pointer;
+            background-color: #1a1227;
+            border: 7.5px solid #989d8c;
+            border-radius: 18px;
+            outline: 3px solid #f0f1e8;
+            outline-offset: -5.25px;
+        }
+
+        #start-button:hover {
+            text-decoration: underline;
+        }
+
+        #party-creator {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        #creator-box {
+            background-color: #1a1227;
+            border: 7.5px solid #989d8c;
+            border-radius: 18px;
+            padding: 30px;
+            width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            text-align: center;
+        }
+
+        .member-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+            background: #000;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .stat-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stat-inputs label {
+            background: #1a1227;
+            border: 2px solid #989d8c;
+            color: white;
+            font-family: 'VT323', monospace;
+            font-size: 20px;
+            padding: 5px;
+            flex: 1;
+            min-width: 120px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stat-inputs input {
+            width: 60px;
+            background: transparent;
+            border: none;
+            color: white;
+            font-family: 'VT323', monospace;
+            font-size: 20px;
+            text-align: right;
+            outline: none;
+        }
+
+        .psi-inputs {
+            background: #1a1227;
+            border: 2px dashed #989d8c;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        .psi-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .psi-row input, .psi-row select {
+            font-family: 'VT323', monospace;
+            font-size: 16px;
+            padding: 5px;
+            background: #000;
+            color: white;
+            border: 1px solid #989d8c;
+            outline: none;
+        }
+
+        .input-psi-name { flex: 2; }
+        .input-psi-cost, .input-psi-power { flex: 1; width: 60px; }
+        .input-psi-type { flex: 1; }
+    </style>
+</head>
+<body>
+<div id="title-screen">
+    <div id="title-section">
+        <h1>RPG Party Creator</h1>
+        <div id="text-box">
+            <p>An earthbound inspired rpg sim where you can create your own party members, and customize them completely! Change their name, attack damage, defense, and more! You can even give them special PSI moves. Enemy customization is coming soon though.</p>
+        </div>
+    </div>
+    <button id="start-button">Start</button>
+</div>
+<div id="party-creator" style="display: none;">
+    <div id="creator-box">
+        <h2>Create your party</h2>
+        <div id="member-forms-container">
+        </div>
+        <div class="creator-controls">
+            <button id="add-member-btn" class="action-btn" style="background: #1a1227; padding: 10px; border: 4px solid #989d8c;">+ Add Member</button>
+            <button id="start-battle-btn" class="action-btn" style="background: #1a1227; padding: 10px; border: 4px solid #989d8c;">Start Battle</button>
+        </div>
+    </div>
+</div>
+<div id="game-container">
+    <div id="action-menu">
+        <p class="character-name" id="action-name">Placeholder</p>
+
+        <div id="mainmenu-container">
+            <button id="btn-bash" class="action-btn">Bash</button><br><br>
+            <button id="btn-defend" class="action-btn">Defend</button><br><br>
+            <button id="btn-psi" class="action-btn">PSI</button><br><br>
+        </div>
+
+        <div id="submenu-container"></div>
+
+        <button id="btn-restart" class="action-btn" style="display: none;">Play Again</button>
+    </div>
+
+    <div id="action-log">
+        An enemy appears!
+    </div>
+
+    <div class="enemy-container" id="enemy-0">
+        <img id="enemy-sprite-img" alt="The enemy">
+
+        <div class="enemy-hp-container">
+            <div class="enemy-hp-bar"></div>
+        </div>
+        <div class="enemy-hp-text">300/300</div>
+    </div>
+
+    <div class="party-container">
+        <!--
+        Party UI element html, this is added to the ui by the js.
+
+        <fieldset class="earthbound-menu active-character">
+            <legend class="character-name">Paula</legend>
+            <div class="stat-box">
+                <span class="stat-label">HP</span>
+                <span class="current">237</span>
+                <span class="max">/280</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">PP</span>
+                <span class="current">132</span>
+                <span class="max">/235</span>
+            </div>
+        </fieldset>
+        -->
+
+    </div>
+</div>
+
+<script>
+    const partyContainer = document.querySelector('.party-container');
+    const actionLog = document.getElementById('action-log');
+
+    class PSIattack {
+        constructor(name, ppCost, power, type) {
+            this.name = name;
+            this.ppCost = ppCost;
+            this.power = power;
+            this.type = type;
+        }
+    }
+
+    class Character {
+        constructor(name, maxHP, currentHP, maxPP, currentPP, offense, defense, psiMoves = []) {
+            this.name = name;
+            this.maxHP = maxHP;
+            this.currentHP = currentHP;
+            this.maxPP = maxPP;
+            this.currentPP = currentPP;
+            this.offense = offense;
+            this.defense = defense;
+            this.psiMoves = psiMoves;
+        }
+    }
+
+    const psiRockin = new PSIattack("PSI Rockin α", 10, 40, "damage");
+    const psiFire = new PSIattack("PSI Fire α", 6, 25, "damage");
+    const lifeup = new PSIattack("Lifeup α", 5, 30, "heal");
+    const disintegrate = new PSIattack("Disintegrate a", 1, 99999, "damage");
+
+    const ness = new Character("Ness", 389, 389, 184, 0, 50, 40, [psiRockin]);
+    const paula = new Character("Paula", 280, 280, 235, 0, 20, 15, [psiFire, lifeup]);
+    const jeff = new Character("Jeff", 415, 415, 0, 0, 45, 25);
+    const bobert = new Character("Bobert", 20, 10, 1, 0, 99, 1, [disintegrate])
+
+    let currentTurnIndex = 0;
+    let isGameOver = false;
+
+    let party = [ness, paula, jeff, bobert];
+
+    function renderParty() {
+        partyContainer.innerHTML = '';
+
+        for (let i=0; i < party.length; i++) {
+            let char = party[i];
+
+            let displayHP = char.currentHP.toString().padStart(3, '0');
+            let displayPP = char.currentPP.toString().padStart(3, '0');
+
+            let charHTML = `
+            <fieldset class="earthbound-menu" id="ui-${i}">
+                <legend class="character-name">${char.name}</legend>
+                <div class="stat-box">
+                    <span class="stat-label">HP</span>
+                    <span class="current">${displayHP}</span>
+                    <span class="max">/${char.maxHP}</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">PP</span>
+                    <span class="current">${displayPP}</span>
+                    <span class="max">/${char.maxPP}</span>
+                </div>
+            </fieldset>
+            `;
+
+            partyContainer.innerHTML += charHTML;
+        }
+    }
+
+    renderParty();
+
+    let enemy = {
+        name: "Robot", //I haven't actually played earthbound forgive me for not knowing the name :sob:
+        currentHP: 1670,
+        maxHP: 1670,
+        offense: 68,
+        defense: 15,
+        sprite: "enemysprite.png"
+    }
+
+    function startTurn() {
+        const allBoxes = document.querySelectorAll('.earthbound-menu');
+
+        for (let i=0; i < allBoxes.length; i++) {
+            allBoxes[i].classList.remove('active-character');
+        }
+
+        let currentChar = party[currentTurnIndex];
+
+        let activeBox = document.getElementById(`ui-${currentTurnIndex}`)
+        if (activeBox) {
+            activeBox.classList.add('active-character');
+        }
+        const actionNameDisplay = document.getElementById('action-name');
+        actionNameDisplay.innerText = currentChar.name;
+
+        currentChar.isDefending = false;
+    }
+
+    function preformBash() {
+        let currentChar = party[currentTurnIndex];
+
+        let damage = currentChar.offense - enemy.defense;
+
+        if (damage < 1) {
+            damage = 1;
+        }
+
+        enemy.currentHP -= damage;
+
+        actionLog.innerText = `${currentChar.name} used Bash! Dealt ${damage} damage to ${enemy.name}.`;
+        triggerDamageAnimation('enemy-sprite-img');
+
+        updateStats();
+        if (checkGameState() === true) return;
+
+        passTurn();
+    }
+
+    function preformDefend() {
+        let currentChar = party[currentTurnIndex];
+
+        currentChar.isDefending = true;
+        actionLog.innerText = `${currentChar.name} is on guard!`;
+        if (currentChar.maxPP === currentChar.currentPP) {
+            currentChar.currentPP += 0;
+        } else if ((currentChar.maxPP - currentChar.currentPP) < 10) {
+            currentChar.currentPP += (currentChar.maxPP - currentChar.currentPP);
+        } else {
+            currentChar.currentPP += 10;
+        }
+
+        passTurn();
+    }
+
+    function updateStats() {
+        for (let i = 0; i < party.length; i++) {
+            let char = party[i];
+
+            if (char.currentHP < 0) {
+                char.currentHP = 0;
+            }
+
+            let displayHP = char.currentHP.toString().padStart(3, '0');
+            let displayPP = char.currentPP.toString().padStart(3, '0');
+
+            let box = document.getElementById(`ui-${i}`);
+
+            if (box) {
+                let currentSpans = box.querySelectorAll('.current');
+
+                currentSpans[0].innerText = displayHP;
+                currentSpans[1].innerText = displayPP;
+            }
+        }
+
+        if (enemy.currentHP < 0) enemy.currentHP = 0;
+
+        document.getElementById('enemy-sprite-img').src = enemy.sprite;
+
+        let hpPercentage = (enemy.currentHP / enemy.maxHP) * 100;
+
+        document.querySelector('.enemy-hp-bar').style.width = `${hpPercentage}%`
+        document.querySelector('.enemy-hp-text').innerText = `${enemy.currentHP}/${enemy.maxHP}`
+    }
+
+    updateStats();
+
+    function passTurn() {
+        updateStats();
+        currentTurnIndex++
+
+        while (currentTurnIndex < party.length && party[currentTurnIndex].currentHP <= 0) {
+            currentTurnIndex++;
+        }
+
+        if (currentTurnIndex >= party.length) {
+            enemyTurn();
+        } else {
+            startTurn();
+        }
+    }
+
+    document.getElementById('btn-bash').addEventListener('click', preformBash);
+    document.getElementById('btn-defend').addEventListener('click', preformDefend);
+
+    startTurn();
+
+    function openPsiMenu() {
+        let currentChar = party[currentTurnIndex];
+
+        if (currentChar.psiMoves.length === 0) {
+            const actionLog = document.getElementById('action-log');
+            actionLog.innerText = `${currentChar.name} doesn't know any PSI!`;
+        } else {
+            document.getElementById('mainmenu-container').style.display = 'none';
+
+            const submenu = document.getElementById('submenu-container');
+            submenu.style.display = 'block';
+
+            let buttonsHTML = '';
+
+            for (let i=0; i < currentChar.psiMoves.length; i++) {
+                let move = currentChar.psiMoves[i];
+
+                buttonsHTML += `
+                    <button class="action-btn psi-attack-btn" data-index="${i}">
+                    ${move.name}<br>(${move.ppCost} PP)
+                    </button><br><br>
+                    `;
+            }
+
+            buttonsHTML += `
+            <button id="btn-back" class="action-btn">Back</button>
+            `;
+
+            submenu.innerHTML = buttonsHTML;
+
+            document.getElementById('btn-back').addEventListener('click', closePsiMenu);
+
+            const spellButtons = document.querySelectorAll('.psi-attack-btn');
+            for (let i=0; i<spellButtons.length; i++) {
+                spellButtons[i].addEventListener('click', castPsi);
+            }
+        }
+
+    }
+
+    function closePsiMenu() {
+        document.getElementById('submenu-container').style.display = 'none';
+
+        document.getElementById('mainmenu-container').style.display = 'block';
+    }
+
+    document.getElementById('btn-psi').addEventListener('click', openPsiMenu);
+
+    function castPsi(event) {
+        let currentChar = party[currentTurnIndex];
+        let clickedButton = event.target;
+        let spellIndex = clickedButton.getAttribute('data-index');
+        let spell = currentChar.psiMoves[spellIndex];
+
+        const actionLog = document.getElementById('action-log');
+
+        if (currentChar.currentPP < spell.ppCost) {
+            actionLog.innerText = "Not enough PP!";
+            return;
+        }
+
+        if (spell.type === "damage") {
+            currentChar.currentPP -= spell.ppCost;
+
+            enemy.currentHP -= spell.power;
+            triggerDamageAnimation('enemy-sprite-img');
+
+            actionLog.innerText = `${currentChar.name} tried ${spell.name}! Dealt ${spell.power} damage to ${enemy.name}.`;
+
+            closePsiMenu();
+            updateStats();
+            if (checkGameState() === true) return;
+            passTurn();
+
+        } else if (spell.type === "heal") {
+            openTargetMenu(spellIndex);
+        }
+    }
+
+    function openTargetMenu(spellIndex) {
+        const submenu = document.getElementById('submenu-container');
+
+        let buttonsHTML = '<p style="font-size: 10px; margin-bottom: 10px;">To who?</p>';
+
+        for (let i = 0; i < party.length; i++) {
+            buttonsHTML += `
+                <button class="action-btn target-btn" data-target="${i}" data-spell="${spellIndex}">
+                    ${party[i].name}
+                </button><br><br>
+            `;
+        }
+
+        buttonsHTML += `
+        <button id="btn-target-back" class="action-btn">Back</button>
+        `;
+
+        submenu.innerHTML = buttonsHTML;
+
+        document.getElementById('btn-target-back').addEventListener('click', openPsiMenu);
+
+        const targetButtons = document.querySelectorAll('.target-btn');
+        for (let i = 0; i < targetButtons.length; i++) {
+            targetButtons[i].addEventListener('click', executeHeal);
+        }
+    }
+
+    function executeHeal(event) {
+        let currentChar = party[currentTurnIndex];
+        let clickedButton = event.target;
+
+        let targetIndex = clickedButton.getAttribute('data-target');
+        let spellIndex = clickedButton.getAttribute('data-spell');
+
+        let target = party[targetIndex];
+        let spell = currentChar.psiMoves[spellIndex];
+
+        currentChar.currentPP -= spell.ppCost;
+
+        let startingHP = target.currentHP;
+
+        target.currentHP += spell.power;
+
+        if (target.currentHP > target.maxHP) {
+            target.currentHP = target.maxHP;
+        }
+
+        let actualHealAmount = target.currentHP - startingHP;
+        triggerHealAnimation(`ui-${targetIndex}`);
+
+        if (actualHealAmount === 0) {
+            document.getElementById('action-log').innerText = `${currentChar.name} used ${spell.name} on ${target.name}! But they were already max HP.`;
+        } else {
+            document.getElementById('action-log').innerText = `${currentChar.name} used ${spell.name} on ${target.name}! Recovered ${actualHealAmount} HP.`;
+        }
+        closePsiMenu();
+        updateStats();
+        passTurn();
+    }
+
+    function enemyTurn() {
+        document.getElementById('action-menu').style.display = 'none';
+        const partyMenu = document.querySelectorAll('.earthbound-menu');
+        const arrayAmount = partyMenu.length - 1;
+
+        partyMenu[arrayAmount].classList.remove('active-character');
+        setTimeout(function() {
+            const actionLog = document.getElementById('action-log');
+            actionLog.innerText = `${enemy.name} is plotting...`;
+
+            setTimeout(function() {
+                let alivePartyMembers = [];
+
+                for (let i = 0; i < party.length; i++) {
+                    if (party[i].currentHP > 0) {
+                        alivePartyMembers.push(party[i]);
+                    }
+                }
+
+                if (alivePartyMembers.length === 0) {
+                    actionLog.innerText = `${enemy.name} is sad because they're all dead :(`
+                }
+                let randomIndex = Math.floor(Math.random() * alivePartyMembers.length);
+
+                let target = alivePartyMembers[randomIndex];
+
+                let damage = enemy.offense - target.defense;
+                if (damage < 1) damage = 1;
+
+                if (target.isDefending === true) {
+                    damage = Math.floor(damage / 2);
+                    actionLog.innerText = `${enemy.name} attacked ${target.name}, but they guarded! Took ${damage} damage.`
+                } else {
+                    actionLog.innerText = `${enemy.name} attacked ${target.name}! Dealt ${damage} damage.`;
+                }
+
+                target.currentHP -= damage;
+
+                if (target.currentHP <= 0) {
+                    actionLog.innerText += `\n${target.name} got hurt and collapsed...`;
+                }
+
+                let trueTargetIndex = party.indexOf(target);
+
+
+                triggerDamageAnimation(`ui-${trueTargetIndex}`);
+
+                updateStats();
+                if (checkGameState() === true) return;
+
+                currentTurnIndex = 0;
+
+                while (currentTurnIndex < party.length && party[currentTurnIndex].currentHP <= 0) {
+                    currentTurnIndex++;
+                }
+
+                document.getElementById('action-menu').style.display = 'block';
+                startTurn();
+            }, 2000);
+        }, 2500);
+    }
+    function restartGame() {
+        for (let i=0; i<party.length; i++) {
+            party[i].currentHP = party[i].maxHP;
+            party[i].currentPP = party[i].maxPP;
+            party[i].isDefending = false;
+        }
+
+        enemy.currentHP = enemy.maxHP;
+
+        currentTurnIndex = 0;
+
+        switchPage('creator');
+
+        document.getElementById('action-log').innerText = "The battle begins anew!";
+        document.getElementById('btn-restart').style.display = 'none';
+        document.getElementById('mainmenu-container').style.display = 'block';
+
+        updateStats();
+        startTurn();
+    }
+
+    function triggerDamageAnimation(elementId) {
+        let element = document.getElementById(elementId);
+        if (element) {
+            element.classList.add('damage-taken');
+
+            setTimeout(function() {
+                element.classList.remove('damage-taken');
+            }, 400);
+        }
+    }
+
+    function triggerHealAnimation(elementId) {
+        let element = document.getElementById(elementId);
+        if (element) {
+            element.classList.add('heal-given');
+
+            setTimeout(function() {
+                element.classList.remove('heal-given');
+            }, 500);
+        }
+    }
+
+    function checkGameState() {
+        if (enemy.currentHP <= 0) {
+            document.getElementById('mainmenu-container').style.display = 'none';
+            document.getElementById('btn-restart').style.display = 'block';
+            document.getElementById('action-name').style.display = 'none';
+
+            document.getElementById('action-log').innerText += `\n\nYOU WON! ${enemy.name} was defeated!`;
+            return true;
+
+        }
+
+        for (let i=0; i<party.length; i++) {
+            if (party[i].currentHP === 0 && document.getElementById(`ui-${i}`).classList.contains('downed-member') === false) {
+                document.getElementById(`ui-${i}`).classList.add('downed-member');
+            }
+        }
+
+        let isPartyDead = true;
+        for (let i=0; i<party.length; i++) {
+            if (party[i].currentHP > 0) {
+                isPartyDead = false;
+                break;
+            }
+        }
+
+        if (isPartyDead === true) {
+            document.getElementById('mainmenu-container').style.display = 'none';
+            document.getElementById('btn-restart').style.display = 'block';
+            document.getElementById('action-name').style.display = 'none';
+
+            document.getElementById('action-log').innerText += `\n\nThe party was wiped out... GAME OVER.`;
+            return true;
+        }
+
+        return false;
+    }
+
+    const titleScreen = document.getElementById('title-screen');
+    const partyCreator = document.getElementById('party-creator');
+    const gameContainer = document.getElementById('game-container');
+    const memberContainer = document.getElementById('member-forms-container');
+
+    let customParty = [];
+    let customPartyData = [];
+
+    function getNewMemberTemplate() {
+        return {
+            name: '', hp: 100, pp: 50, atk: 20, def: 10,
+            psi: [
+                { name: 'PSI Rockin α', cost: 10, power: 40, type: 'damage' },
+                { name: '', cost: 5, power: 30, type: 'heal' },
+                { name: '', cost: 15, power: 80, type: 'damage' }
+            ]
+        };
+    }
+
+    function switchPage(page) {
+        titleScreen.style.display = 'none';
+        partyCreator.style.display = 'none';
+        gameContainer.style.display = 'none';
+
+        if (page === 'creator') {
+            partyCreator.style.display = 'flex';
+            renderMemberForms();
+        } else if (page === 'game') {
+            gameContainer.style.display = 'flex';
+            party = customParty;
+            renderParty();
+            startTurn();
+        }
+    }
+
+    function renderMemberForms() {
+        memberContainer.innerHTML = '';
+
+        customPartyData.forEach((member, i) => {
+            let formHTML = `
+            <div class="member-form">
+                <span style="font-family: 'VT323'; font-size: 24px; margin-bottom: 10px; color: white;">${i + 1}. Character</span>
+                <div class="stat-inputs">
+                    <label>NAME: <input type="text" class="input-name" value="${member.name}"></label>
+                    <label>HP: <input type="number" class="input-hp" value="${member.hp}"></label>
+                    <label>PP: <input type="number" class="input-pp" value="${member.pp}"></label>
+                    <label>ATK: <input type="number" class="input-atk" value="${member.atk}"></label>
+                    <label>DEF: <input type="number" class="input-def" value="${member.def}"></label>
+                </div>
+                <div class="psi-inputs">
+                    <span style="color: white; font-family: 'VT323'; font-size: 18px;">PSI Moves (Leave Name Blank to Skip)</span>
+            `;
+
+            for(let j=0; j<3; j++) {
+                let p = member.psi[j];
+                formHTML += `
+                    <div class="psi-row">
+                        <input type="text" placeholder="Move Name" class="input-psi-name" value="${p.name}">
+                        <input type="number" placeholder="Cost" class="input-psi-cost" value="${p.cost}" title="PP Cost">
+                        <input type="number" placeholder="Power" class="input-psi-power" value="${p.power}" title="Power/Heal Amount">
+                        <select class="input-psi-type">
+                            <option value="damage" ${p.type === 'damage' ? 'selected' : ''}>DMG</option>
+                            <option value="heal" ${p.type === 'heal' ? 'selected' : ''}>HEAL</option>
+                        </select>
+                    </div>
+                `;
+            }
+
+            formHTML += `
+                </div>
+            </div>`;
+            memberContainer.innerHTML += formHTML;
+        });
+    }
+
+    document.getElementById('add-member-btn').addEventListener('click', () => {
+        if (customPartyData.length < 4) {
+            saveCurrentInputData();
+            customPartyData.push(getNewMemberTemplate());
+            renderMemberForms();
+        } else {
+            alert("Party is full! (Max 4)");
+        }
+    });
+
+    function saveCurrentInputData() {
+        const forms = document.querySelectorAll('.member-form');
+        forms.forEach((form, i) => {
+            customPartyData[i].name = form.querySelector('.input-name').value;
+            customPartyData[i].hp = parseInt(form.querySelector('.input-hp').value) || 1;
+            customPartyData[i].pp = parseInt(form.querySelector('.input-pp').value) || 0;
+            customPartyData[i].atk = parseInt(form.querySelector('.input-atk').value) || 1;
+            customPartyData[i].def = parseInt(form.querySelector('.input-def').value) || 0;
+
+            const psiNames = form.querySelectorAll('.input-psi-name');
+            const psiCosts = form.querySelectorAll('.input-psi-cost');
+            const psiPowers = form.querySelectorAll('.input-psi-power');
+            const psiTypes = form.querySelectorAll('.input-psi-type');
+
+            for (let j = 0; j < 3; j++) {
+                customPartyData[i].psi[j].name = psiNames[j].value;
+                customPartyData[i].psi[j].cost = parseInt(psiCosts[j].value) || 0;
+                customPartyData[i].psi[j].power = parseInt(psiPowers[j].value) || 0;
+                customPartyData[i].psi[j].type = psiTypes[j].value;
+            }
+        });
+    }
+
+    document.getElementById('start-battle-btn').addEventListener('click', () => {
+        saveCurrentInputData();
+        customParty = [];
+
+        customPartyData.forEach((data, i) => {
+            const name = data.name || `Hero ${i + 1}`;
+            let charPsi = [];
+
+            data.psi.forEach(p => {
+                if (p.name.trim() !== '') {
+                    charPsi.push(new PSIattack(p.name, p.cost, p.power, p.type));
+                }
+            });
+
+            customParty.push(new Character(name, data.hp, data.hp, data.pp, data.pp, data.atk, data.def, charPsi));
+        });
+
+        if (customParty.length > 0) {
+            switchPage('game');
+        } else {
+            alert("You need at least one party member!");
+        }
+    });
+
+    document.getElementById('start-button').addEventListener('click', () => {
+        let nessTemplate = getNewMemberTemplate();
+        nessTemplate.name = 'Ness';
+        nessTemplate.hp = 389;
+        nessTemplate.pp = 184;
+        nessTemplate.atk = 50;
+        nessTemplate.def = 40;
+
+        customPartyData = [nessTemplate];
+        switchPage('creator');
+    });
+
+    document.getElementById('btn-restart').addEventListener('click', restartGame);
+</script>
+
+</body>
+</html>
